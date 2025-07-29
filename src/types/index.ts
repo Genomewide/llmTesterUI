@@ -104,6 +104,67 @@ export interface FilePreviewResult {
   error?: string;
 }
 
+// ARS API related types
+export interface ARSNode {
+  name?: string;
+  categories?: string[];
+  [key: string]: any;
+}
+
+export interface ARSEdge {
+  subject: string;
+  object: string;
+  predicate: string;
+  sources: Array<{
+    resource_role: string;
+    resource_id: string;
+  }>;
+  attributes?: Array<{
+    attribute_type_id: string;
+    value: any;
+  }>;
+  qualifiers?: Array<{
+    qualifier_type_id: string;
+    qualifier_value: string;
+  }>;
+  [key: string]: any;
+}
+
+export interface ARSResult {
+  rank: number;
+  sugeno: number;
+  weighted_mean: number;
+  normalized_score: number;
+  ordering_components?: {
+    novelty: number;
+    confidence: number;
+    clinical_evidence: number;
+  };
+  node_bindings: Record<string, Array<{ id: string }>>;
+  analyses: Array<{
+    resource_id: string;
+    score: number;
+    edge_bindings: Record<string, Array<{ id: string }>>;
+  }>;
+  [key: string]: any;
+}
+
+export interface ProcessedData {
+  results: ARSResult[];
+  edges: Record<string, ARSEdge>;
+  nodes: Record<string, ARSNode>;
+  auxiliary_graphs: Record<string, any>;
+  flattenedRows: any[];
+  metadata: {
+    pk: string;
+    environment: string;
+    timestamp: string;
+    resultsCount: number;
+    nodesCount: number;
+    edgesCount: number;
+  };
+}
+
 // Electron API types
 declare global {
   interface Window {
@@ -123,6 +184,8 @@ declare global {
         environment?: string;
         timestamp?: string;
       }>;
+      saveCSVFile: (filePath: string, content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+      saveJSONFile: (filePath: string, content: any) => Promise<{ success: boolean; filePath?: string; error?: string }>;
       getAppVersion: () => string;
       getNodeVersion: () => string;
       getChromeVersion: () => string;

@@ -19,6 +19,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ARS API functionality
   fetchArsData: (pk, environment) => ipcRenderer.invoke('fetch-ars-data', pk, environment),
   
+  // File export functionality
+  saveCSVFile: (filePath, content) => ipcRenderer.invoke('save-csv-file', filePath, content),
+  saveJSONFile: (filePath, content) => ipcRenderer.invoke('save-json-file', filePath, content),
+  
   // Utility functions
   getAppVersion: () => process.versions.app,
   getNodeVersion: () => process.versions.node,

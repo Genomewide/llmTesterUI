@@ -394,4 +394,55 @@ ipcMain.handle('fetch-ars-data', async (event, pk, environment = 'prod') => {
       environment: environment
     };
   }
+});
+
+// File export handlers
+ipcMain.handle('save-csv-file', async (event, filePath, content) => {
+  try {
+    console.log(`Saving CSV file: ${filePath}`);
+    
+    // Ensure the directory exists
+    await fs.ensureDir(path.dirname(filePath));
+    
+    // Write the CSV content
+    await fs.writeFile(filePath, content, 'utf8');
+    
+    console.log(`CSV file saved successfully: ${filePath}`);
+    
+    return {
+      success: true,
+      filePath: filePath
+    };
+  } catch (error) {
+    console.error('Error saving CSV file:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+});
+
+ipcMain.handle('save-json-file', async (event, filePath, content) => {
+  try {
+    console.log(`Saving JSON file: ${filePath}`);
+    
+    // Ensure the directory exists
+    await fs.ensureDir(path.dirname(filePath));
+    
+    // Write the JSON content
+    await fs.writeJson(filePath, content, { spaces: 2 });
+    
+    console.log(`JSON file saved successfully: ${filePath}`);
+    
+    return {
+      success: true,
+      filePath: filePath
+    };
+  } catch (error) {
+    console.error('Error saving JSON file:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
 }); 

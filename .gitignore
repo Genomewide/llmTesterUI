@@ -2,9 +2,14 @@
 
 # node_modules
 node_modules/
+node_modules/.cache
+
 
 # dist
 dist/
 
 # build
 build/
+
+# data
+data/  
