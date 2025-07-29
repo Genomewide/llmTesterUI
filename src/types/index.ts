@@ -115,6 +115,14 @@ declare global {
       processLargeFile: (filePath: string, projectId: string) => Promise<FileProcessingResult>;
       getFilePreview: (filePath: string, maxRecords?: number) => Promise<FilePreviewResult>;
       exportProject: (project: Project, format?: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+      fetchArsData: (pk: string, environment?: string) => Promise<{
+        success: boolean;
+        data?: any;
+        error?: string;
+        pk?: string;
+        environment?: string;
+        timestamp?: string;
+      }>;
       getAppVersion: () => string;
       getNodeVersion: () => string;
       getChromeVersion: () => string;

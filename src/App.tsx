@@ -23,6 +23,7 @@ import PromptEditor from './components/PromptEditor';
 import ResponseViewer from './components/ResponseViewer';
 import ProjectManager from './components/ProjectManager';
 import HistoryViewer from './components/HistoryViewer';
+import DataFetcher from './components/DataFetcher';
 
 const theme = createTheme({
   palette: {
@@ -331,6 +332,20 @@ const App: React.FC = () => {
                     />
                   </Grid>
                 </Grid>
+              </Paper>
+
+              {/* Data Fetcher Section */}
+              <Paper sx={{ p: 3, mt: 3 }}>
+                <DataFetcher
+                  onDataProcessed={(data) => {
+                    console.log('Data processed:', data);
+                    // TODO: Integrate with project system
+                  }}
+                  onFileGenerated={(filePath) => {
+                    console.log('File generated:', filePath);
+                    // TODO: Add to project files
+                  }}
+                />
               </Paper>
             </Grid>
 

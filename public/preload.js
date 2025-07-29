@@ -16,6 +16,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Export functionality
   exportProject: (project, format) => ipcRenderer.invoke('export-project', project, format),
   
+  // ARS API functionality
+  fetchArsData: (pk, environment) => ipcRenderer.invoke('fetch-ars-data', pk, environment),
+  
   // Utility functions
   getAppVersion: () => process.versions.app,
   getNodeVersion: () => process.versions.node,

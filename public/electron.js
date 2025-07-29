@@ -7,6 +7,7 @@ const { streamArray } = require('stream-json/streamers/StreamArray');
 const csv = require('csv-parser');
 const yaml = require('js-yaml');
 const xml2js = require('xml2js');
+const axios = require('axios');
 
 let mainWindow;
 
@@ -335,5 +336,62 @@ ipcMain.handle('export-project', async (event, project, format = 'json') => {
     return { success: true, filePath: exportPath };
   } catch (error) {
     return { success: false, error: error.message };
+  }
+});
+
+// ARS API handlers
+ipcMain.handle('fetch-ars-data', async (event, pk, environment = 'prod') => {
+  try {
+    console.log(`Fetching ARS data for PK: ${pk}, Environment: ${environment}`);
+    
+    // Environment URL mapping
+    const ARS_ENVIRONMENTS = {
+      test: 'https://ars.test.transltr.io',
+      CI: 'https://ars.ci.transltr.io',
+      dev: 'https://ars-dev.transltr.io',
+      prod: 'https://ars-prod.transltr.io'
+    };
+    
+    const baseUrl = ARS_ENVIRONMENTS[environment] || ARS_ENVIRONMENTS.prod;
+    
+    // Fetch initial message
+    const response = await axios.get(`${baseUrl}/ars/api/messages/${pk}?trace=y`);
+    const data = response.data;
+    
+    console.log('Initial API response received:', {
+      status: response.status,
+      hasFields: !!data.fields,
+      hasData: !!data.fields?.data
+    });
+    
+    // Get merged version if available
+    let mergedData = null;
+    if (data.merged_version) {
+      console.log(`Fetching merged version: ${data.merged_version}`);
+      const mergedResponse = await axios.get(`${baseUrl}/ars/api/messages/${data.merged_version}`);
+      mergedData = mergedResponse.data;
+      
+      console.log('Merged API response received:', {
+        status: mergedResponse.status,
+        hasFields: !!mergedData.fields,
+        hasData: !!mergedData.fields?.data
+      });
+    }
+    
+    return {
+      success: true,
+      data: mergedData || data,
+      pk: pk,
+      environment: environment,
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Error in fetch-ars-data:', error);
+    return {
+      success: false,
+      error: error.message,
+      pk: pk,
+      environment: environment
+    };
   }
 }); 
