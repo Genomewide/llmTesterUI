@@ -110,26 +110,30 @@ export class APIService {
     try {
       const startTime = Date.now();
       
-      // In production, this would be an actual API call to your LLM service
-      // const response = await fetch('/api/test', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(config)
-      // });
-      // const result = await response.json();
+      let response: string;
+      let modelName: string;
       
-      // Mock response for development
-      const mockResponse = await this.mockLLMResponse(config);
+      if (CONFIG.USE_REAL_OLLAMA) {
+        // Real Ollama API call
+        const ollamaResponse = await this.callOllamaAPI(config);
+        response = ollamaResponse;
+        modelName = config.modelId;
+      } else {
+        // Mock response for development
+        response = await this.mockLLMResponse(config);
+        modelName = MOCK_MODELS.find(m => m.id === config.modelId)?.name || config.modelId;
+      }
+      
       const responseTime = Date.now() - startTime;
       
       const interaction: Interaction = {
         id: `interaction_${Date.now()}`,
         timestamp: new Date(),
         modelId: config.modelId,
-        modelName: MOCK_MODELS.find(m => m.id === config.modelId)?.name || config.modelId,
+        modelName: modelName,
         systemPrompt: config.systemPrompt,
         userInput: config.userInput,
-        response: mockResponse,
+        response: response,
         responseTime,
         structuredOutput: config.structuredOutput,
         outputFormat: config.outputFormat,
@@ -143,6 +147,39 @@ export class APIService {
     } catch (error) {
       console.error('Error testing model:', error);
       throw new Error('Failed to test model');
+    }
+  }
+
+  private static async callOllamaAPI(config: TestConfig): Promise<string> {
+    try {
+      const requestBody = {
+        model: config.modelId,
+        prompt: config.userInput,
+        system: config.systemPrompt,
+        stream: false,
+        options: {
+          temperature: config.temperature || CONFIG.DEFAULT_TEMPERATURE,
+          num_predict: config.maxTokens || CONFIG.DEFAULT_MAX_TOKENS
+        }
+      };
+
+      const response = await fetch(`${CONFIG.OLLAMA_URL}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data.response || 'No response from model';
+    } catch (error) {
+      console.error('Error calling Ollama API:', error);
+      throw new Error(`Failed to call Ollama API: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 

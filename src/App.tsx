@@ -157,8 +157,7 @@ const App: React.FC = () => {
 
     setProjects([...projects, newProject]);
     setCurrentProject(newProject);
-    // Clear imported data when creating new project
-    setImportedData(null);
+    // Clear user input when creating new project, but keep imported data
     setUserInput('');
     APIService.saveProject(newProject);
     
@@ -168,8 +167,7 @@ const App: React.FC = () => {
 
   const handleProjectSelect = (project: Project) => {
     setCurrentProject(project);
-    // Clear imported data when switching projects
-    setImportedData(null);
+    // Clear user input when switching projects, but keep imported data
     setUserInput('');
   };
 

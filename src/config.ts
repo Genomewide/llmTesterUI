@@ -1,6 +1,6 @@
 export const CONFIG = {
   // Set to true to use real Ollama API, false for mock data
-  USE_REAL_OLLAMA: false,
+  USE_REAL_OLLAMA: true,
   
   // Ollama API endpoint
   OLLAMA_URL: 'http://localhost:11434',

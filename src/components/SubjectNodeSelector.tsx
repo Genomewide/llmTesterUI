@@ -51,20 +51,21 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
   const formatDataForInput = (filteredData: any[]): string => {
     let output = '';
     
-    // Add all phrases
-    const phrases = filteredData.map(row => row.phrase);
-    output += phrases.join('\n');
-    
-    // Add publications if they exist
-    const publications = filteredData
-      .filter(row => row.publications && row.publications !== 'N/A')
-      .map(row => row.publications)
-      .filter((pub, index, arr) => arr.indexOf(pub) === index); // Remove duplicates
+    // Process each row to group phrases with their publications
+    filteredData.forEach((row, index) => {
+      // Add line space before each phrase (except the first one)
+      if (index > 0) {
+        output += '\n';
+      }
       
-    if (publications.length > 0) {
-      output += '\n\nSupporting articles:\n';
-      output += publications.join('\n');
-    }
+      // Add the phrase
+      output += row.phrase;
+      
+      // Add publications immediately after the phrase if they exist
+      if (row.publications && row.publications !== 'N/A') {
+        output += '\nSupporting publications: ' + row.publications;
+      }
+    });
     
     return output;
   };
