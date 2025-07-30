@@ -108,3 +108,4 @@ Thumbs.db
 # Large files that shouldn't be in git
 *.pack
 *.pack.old
+node_modules
