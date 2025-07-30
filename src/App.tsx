@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import { PlayArrow as PlayIcon, Save as SaveIcon } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
-import { LLMModel, Project, Interaction, TestConfig } from './types';
+import { LLMModel, Project, Interaction, TestConfig, ProcessedData } from './types';
 import { APIService } from './services/api';
 import ModelSelector from './components/ModelSelector';
 import PromptEditor from './components/PromptEditor';
@@ -24,6 +24,7 @@ import ResponseViewer from './components/ResponseViewer';
 import ProjectManager from './components/ProjectManager';
 import HistoryViewer from './components/HistoryViewer';
 import DataFetcher from './components/DataFetcher';
+
 
 const theme = createTheme({
   palette: {
@@ -52,6 +53,9 @@ const App: React.FC = () => {
   // Project management
   const [projects, setProjects] = useState<Project[]>([]);
   const [currentProject, setCurrentProject] = useState<Project | null>(null);
+  
+  // Data import state
+  const [importedData, setImportedData] = useState<ProcessedData | null>(null);
   
 
   
@@ -153,6 +157,9 @@ const App: React.FC = () => {
 
     setProjects([...projects, newProject]);
     setCurrentProject(newProject);
+    // Clear imported data when creating new project
+    setImportedData(null);
+    setUserInput('');
     APIService.saveProject(newProject);
     
     setSnackbarMessage('Project created successfully!');
@@ -161,6 +168,9 @@ const App: React.FC = () => {
 
   const handleProjectSelect = (project: Project) => {
     setCurrentProject(project);
+    // Clear imported data when switching projects
+    setImportedData(null);
+    setUserInput('');
   };
 
   const handleProjectDelete = (projectId: string) => {
@@ -294,6 +304,7 @@ const App: React.FC = () => {
                       onOutputFormatChange={setOutputFormat}
                       supportsStructuredOutput={selectedModelData?.supportsStructuredOutput || false}
                       loading={loading}
+                      importedData={importedData}
                     />
                   </Grid>
 
@@ -341,7 +352,9 @@ const App: React.FC = () => {
                 <DataFetcher
                   onDataProcessed={(data) => {
                     console.log('Data processed:', data);
-                    // TODO: Integrate with project system
+                    setImportedData(data);
+                    setSnackbarMessage('Data imported successfully!');
+                    setSnackbarOpen(true);
                   }}
                   onFileGenerated={(filePath) => {
                     console.log('File generated:', filePath);

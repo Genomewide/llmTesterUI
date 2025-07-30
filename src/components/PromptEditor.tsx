@@ -10,6 +10,8 @@ import {
   Select,
   MenuItem
 } from '@mui/material';
+import SubjectNodeSelector from './SubjectNodeSelector';
+import { ProcessedData } from '../types';
 
 interface PromptEditorProps {
   systemPrompt: string;
@@ -22,6 +24,7 @@ interface PromptEditorProps {
   onOutputFormatChange: (format: string) => void;
   supportsStructuredOutput: boolean;
   loading?: boolean;
+  importedData?: ProcessedData | null;
 }
 
 const PromptEditor: React.FC<PromptEditorProps> = ({
@@ -34,7 +37,8 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
   onStructuredOutputChange,
   onOutputFormatChange,
   supportsStructuredOutput,
-  loading = false
+  loading = false,
+  importedData = null
 }) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -58,6 +62,18 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
         <Typography variant="h6" gutterBottom>
           User Input
         </Typography>
+        
+        {/* Data Selector - only show when data is available */}
+        {importedData && (
+          <SubjectNodeSelector
+            data={importedData}
+            onSubjectSelect={onUserInputChange}
+            disabled={loading}
+            placeholder="Select a subject node to populate input..."
+            label="Data Selector"
+          />
+        )}
+        
         <TextField
           fullWidth
           multiline
