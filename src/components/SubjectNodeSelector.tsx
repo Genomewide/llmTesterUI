@@ -51,19 +51,47 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
   const formatDataForInput = (filteredData: any[]): string => {
     let output = '';
     
-    // Process each row to group phrases with their publications
-    filteredData.forEach((row, index) => {
+    // Group phrases and count occurrences
+    const phraseCounts = new Map<string, { count: number; publications: Set<string> }>();
+    
+    filteredData.forEach((row) => {
+      const phrase = row.phrase;
+      const publication = row.publications && row.publications !== 'N/A' ? row.publications : null;
+      
+      if (phraseCounts.has(phrase)) {
+        const existing = phraseCounts.get(phrase)!;
+        existing.count += 1;
+        if (publication) {
+          existing.publications.add(publication);
+        }
+      } else {
+        phraseCounts.set(phrase, {
+          count: 1,
+          publications: publication ? new Set([publication]) : new Set()
+        });
+      }
+    });
+    
+    // Format the grouped data
+    const uniquePhrases = Array.from(phraseCounts.entries());
+    uniquePhrases.forEach(([phrase, data], index) => {
       // Add line space before each phrase (except the first one)
       if (index > 0) {
         output += '\n';
       }
       
-      // Add the phrase
-      output += row.phrase;
+      // Add the phrase with count
+      if (data.count > 1) {
+        output += `${phrase} (x${data.count})`;
+      } else {
+        output += phrase;
+      }
       
-      // Add publications immediately after the phrase if they exist
-      if (row.publications && row.publications !== 'N/A') {
-        output += '\nSupporting publications: ' + row.publications;
+      // Add publication count if there are publications
+      if (data.publications.size > 0) {
+        const publicationCount = data.publications.size;
+        const publicationText = publicationCount === 1 ? 'publication' : 'publications';
+        output += ` supported by ${publicationCount} ${publicationText}`;
       }
     });
     
