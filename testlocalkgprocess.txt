@@ -1,0 +1,2294 @@
+Testing simplified data processing with local file: data/examplefiles/Addison Disease_b724bec6-e952-4c0e-bd14-e6330a9b8ef3_2025_7_29_19_18.json
+============================================================
+Loading JSON file...
+File loaded successfully!
+Data structure: {
+  hasFields: true,
+  hasData: true,
+  hasMessage: true,
+  hasResults: true,
+  hasKnowledgeGraph: true,
+  resultsCount: 582,
+  nodesCount: 668,
+  edgesCount: 2373
+}
+
+Processing data...
+Starting simplified data processing...
+Processing 582 results, 668 nodes, 2373 edges, 893 auxiliary graphs
+Available auxiliary graphs: [
+  'support0-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8228-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8382-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:7565-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5781-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:141213-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-UNII:09QCEV5481-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68639-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:32138-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:34969-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-UNII:TK694ZFS57-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support1-CHEBI:68639-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support1-UNII:09QCEV5481-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6888-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9667-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3077-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support3-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support4-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-treats-MONDO:0015129-via_subclass',
+  'support5-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9463-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:3897-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:25354-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:16422-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:24261-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:17026-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:19168-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-MESH:D000305-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:50113-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-MESH:D006908-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8382-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0037663-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:24261-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:50113-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:9463-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3077-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9667-treats-MONDO:0015129-via_subclass',
+  'support6-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8378-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6888-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:28697-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:35341-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:2654-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0593802-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0051066-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support3-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support4-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6413-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:7573-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:51063-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UNII:VK9OS8R205-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:31638-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:144093-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:16422-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:22984-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9241-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3309-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68534-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:15940-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UNII:X05U0N2RCO-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support3-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support5-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6801-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:6888-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:15365-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:47518-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6954-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:27882-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:46081-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:63631-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5739-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6446-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68639-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  ... 793 more items
+]
+Auxiliary graph keys: [
+  'support0-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8228-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8382-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:7565-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5781-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:141213-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-UNII:09QCEV5481-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68639-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:32138-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:34969-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-UNII:TK694ZFS57-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support1-CHEBI:68639-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support1-UNII:09QCEV5481-in_clinical_trials_for-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6888-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9667-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3077-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support3-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support4-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-treats-MONDO:0015129-via_subclass',
+  'support5-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9463-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:3897-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:25354-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:16422-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:24261-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:17026-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:19168-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-MESH:D000305-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:50113-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-MESH:D006908-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8382-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0037663-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:24261-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:50113-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:9463-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3077-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9667-treats-MONDO:0015129-via_subclass',
+  'support6-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:8378-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6888-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3897-treats-MONDO:0015129-via_subclass',
+  'support0-CHEBI:28697-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:35341-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:2654-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0593802-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UMLS:C0051066-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support3-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support4-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:3892-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6413-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:7573-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:51063-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UNII:VK9OS8R205-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:4462-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:31638-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:144093-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:16422-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:22984-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:9241-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:3309-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68534-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:15940-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-UNII:X05U0N2RCO-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support3-CHEBI:8378-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support5-CHEBI:5781-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6801-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support1-CHEBI:6888-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:15365-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:47518-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6954-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5102-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:27882-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:46081-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:63631-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:5739-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:6446-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support2-CHEBI:5812-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  'support0-CHEBI:68639-treats_or_applied_or_studied_to_treat-MONDO:0015129-via_subclass',
+  ... 793 more items
+]
+
+--- Processing Result 1 ---
+Node binding keys: [ 'on', 'sn' ]
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Processing key: sn, nodeId: CHEBI:5102, nodeName: fludrocortisone acetate
+✓ Assigned sn (CHEBI:5102) as subject node: fludrocortisone acetate
+Extracted result data: {
+  result_subjectNode_name: 'fludrocortisone acetate',
+  result_subjectNode_id: 'CHEBI:5102',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'logical_entailment',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'automated_agent',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'agent_type',
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'automated_agent',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  attribute_source: 'infores:drugcentral',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  attribute_source: 'infores:drugcentral',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: [
+    'DrugCentral:1191---DrugCentral:indication---None---None---None---DOID:0050811---DrugCentral:'
+  ],
+  value_type_id: 'metatype:String',
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: 'The IDs of the original RTX-KG2pre edge(s) corresponding to this edge prior to any synonymization or remapping.',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: 'biolink:applied_to_treat',
+  value_type_id: 'biolink:predicate',
+  attribute_source: 'infores:arax',
+  value_url: null,
+  description: 'Predicate as it appears in RTX-KG2, prior to alteration by ARAX.',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'agent_type',
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: [
+    'DrugCentral:1191---DrugCentral:indication---None---None---None---UMLS:C0001403---DrugCentral:'
+  ],
+  value_type_id: 'metatype:String',
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: 'The IDs of the original RTX-KG2pre edge(s) corresponding to this edge prior to any synonymization or remapping.',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: 'biolink:applied_to_treat',
+  value_type_id: 'biolink:predicate',
+  attribute_source: 'infores:arax',
+  value_url: null,
+  description: 'Predicate as it appears in RTX-KG2, prior to alteration by ARAX.',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  attribute_source: 'infores:ctd',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  attribute_source: 'infores:ctd',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:publications',
+  original_attribute_name: null,
+  value: [ 'PMID:9816363' ],
+  value_type_id: 'linkml:Uriorcurie',
+  attribute_source: null,
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  attribute_source: 'infores:sider',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  attribute_source: 'infores:sider',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:max_research_phase',
+  original_attribute_name: 'phase',
+  value: 'clinical_trial_phase_4',
+  value_type_id: null,
+  attribute_source: 'infores:chembl',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:provided_by',
+  original_attribute_name: 'act_sources',
+  value: [ 'IUPHAR', 'WOMBAT-PK' ],
+  value_type_id: null,
+  attribute_source: 'infores:drugcentral',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: 'infores:spoke',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: 'infores:spoke',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  attribute_source: 'infores:sider',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  attribute_source: 'infores:sider',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+
+--- Processing Result 2 ---
+Node binding keys: [ 'on', 'sn' ]
+Processing key: on, nodeId: MONDO:0018479, nodeName: congenital adrenal hyperplasia
+✓ Assigned on (MONDO:0018479) as object node: congenital adrenal hyperplasia
+Processing key: sn, nodeId: CHEBI:5781, nodeName: cortisol sodium phosphate
+✓ Assigned sn (CHEBI:5781) as subject node: cortisol sodium phosphate
+Extracted result data: {
+  result_subjectNode_name: 'cortisol sodium phosphate',
+  result_subjectNode_id: 'CHEBI:5781',
+  result_objectNode_name: 'congenital adrenal hyperplasia',
+  result_objectNode_id: 'MONDO:0018479'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#6' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#6: Found 1 support graphs, processed 1 support edges
+
+--- Processing Result 3 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:5781, nodeName: cortisol sodium phosphate
+✓ Assigned sn (CHEBI:5781) as subject node: cortisol sodium phosphate
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'cortisol sodium phosphate',
+  result_subjectNode_id: 'CHEBI:5781',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [
+    'support0-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support1-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support2-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support3-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support4-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support5-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support6-CHEBI:5781-treats-MONDO:0015129-via_subclass'
+  ]
+}
+Found support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge CHEBI:5781-treats-MONDO:0015129-via_subclass: Found 1 support graphs, processed 26 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:supporting_study',
+  attributes: [
+    {
+      attribute_type_id: 'clinical_trial_phase',
+      value: 4,
+      value_type_id: 'biolink:ResearchPhaseEnum'
+    },
+    { attribute_type_id: 'tested', value: 'yes' },
+    { attribute_type_id: 'primary_purpose', value: 'OTHER' },
+    { attribute_type_id: 'intervention_model', value: 'CROSSOVER' },
+    { attribute_type_id: 'clinical_trial_status', value: 'UNKNOWN' },
+    { attribute_type_id: 'start_date', value: '2022-03-14' },
+    {
+      attribute_type_id: 'study_size',
+      value: 8,
+      value_type_id: 'metatype:Integer'
+    },
+    { attribute_type_id: 'enrollment_type', value: 'ESTIMATED' },
+    { attribute_type_id: 'age_range', value: '18 years to 70 years' },
+    {
+      attribute_type_id: 'child',
+      value: false,
+      value_type_id: 'metatype:Boolean'
+    },
+    {
+      attribute_type_id: 'adult',
+      value: true,
+      value_type_id: 'metatype:Boolean'
+    },
+    {
+      attribute_type_id: 'older_adult',
+      value: true,
+      value_type_id: 'metatype:Boolean'
+    }
+  ],
+  value: 'NCT05350020',
+  value_url: 'https://clinicaltrials.gov/study/NCT05350020?tab=table'
+}
+attribute {
+  attribute_type_id: 'biolink:max_research_phase',
+  value: 4,
+  value_type_id: 'biolink:ResearchPhaseEnum'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+attribute {
+  attribute_type_id: 'clinical_trial_tested_intervention',
+  value: 'yes',
+  value_type_id: 'metatype:String'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'intervention_boxed_warning',
+  value: '9/924'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'elevate_to_prediction',
+  value: false,
+  value_type_id: 'metatype:Boolean'
+}
+attribute {
+  attribute_type_id: 'biolink:clinical_approval_status',
+  value: 'biolink:approved_for_condition',
+  value_type_id: 'biolink:ClinicalApprovalStatusEnum'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:5781-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:5781-treats-MONDO:0015129: Found 1 support graphs, processed 6 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#41' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#41: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#58' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#58: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#64' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#64: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#205' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#205: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'd77738d1' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+Edge 831708096b78: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_14_e_20' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 06a4388d8fbe: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_27_e_28' ]
+}
+Found support graph
+Processing support graph
+Edge 059d6c66350f: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [
+    'support0-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support1-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support2-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support3-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support4-CHEBI:5781-treats-MONDO:0015129-via_subclass',
+    'support5-CHEBI:5781-treats-MONDO:0015129-via_subclass'
+  ]
+}
+Found support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 57c641f106dc: Found 1 support graphs, processed 24 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:Attribute',
+  value: [ 'DB00741_MESH_D000224_1' ],
+  original_attribute_name: 'drugmechdb_path_id'
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+
+--- Processing Result 4 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:3897, nodeName: Cortisone acetate
+✓ Assigned sn (CHEBI:3897) as subject node: Cortisone acetate
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'Cortisone acetate',
+  result_subjectNode_id: 'CHEBI:3897',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:3897-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge CHEBI:3897-treats-MONDO:0015129-via_subclass: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:3897-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:3897-treats-MONDO:0015129: Found 1 support graphs, processed 5 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#38' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#38: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#42' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#42: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#63' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#63: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#78' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#78: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:chembl',
+  attribute_type_id: 'biolink:max_research_phase',
+  original_attribute_name: 'phase',
+  value: 'clinical_trial_phase_4'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_26_e_28' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge a5796ef2552e: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_17_e_20' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge c3ee02c24caf: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '46b32154' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Edge 7c97fcad3621: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '11c1bbb5' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+Edge 7831f711c1ea: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+attribute {
+  attribute_type_id: 'biolink:Attribute',
+  value: [ 'DB01380_MESH_D000224_1' ],
+  original_attribute_name: 'drugmechdb_path_id'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:3897-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge efab1ad8d282: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+
+--- Processing Result 5 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:5102, nodeName: fludrocortisone acetate
+✓ Assigned sn (CHEBI:5102) as subject node: fludrocortisone acetate
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'fludrocortisone acetate',
+  result_subjectNode_id: 'CHEBI:5102',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [
+    'support0-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+    'support1-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+    'support2-CHEBI:5102-treats-MONDO:0015129-via_subclass'
+  ]
+}
+Found support graph
+Processing support graph
+Processing support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge CHEBI:5102-treats-MONDO:0015129-via_subclass: Found 1 support graphs, processed 12 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:5102-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:5102-treats-MONDO:0015129: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#11' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#11: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#206' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#206: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:chembl',
+  attribute_type_id: 'biolink:max_research_phase',
+  original_attribute_name: 'phase',
+  value: 'clinical_trial_phase_4'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'agent_type',
+  attribute_source: 'infores:ctd',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:publications',
+  value: [ 'PMID:9816363' ],
+  value_type_id: 'linkml:Uriorcurie'
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:ctd',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [
+    'support0-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+    'support1-CHEBI:5102-treats-MONDO:0015129-via_subclass',
+    'support2-CHEBI:5102-treats-MONDO:0015129-via_subclass'
+  ]
+}
+Found support graph
+Processing support graph
+Processing support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge d79b78468051: Found 1 support graphs, processed 12 support edges
+
+--- Processing Result 6 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:8378, nodeName: Prednisolone
+✓ Assigned sn (CHEBI:8378) as subject node: Prednisolone
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'Prednisolone',
+  result_subjectNode_id: 'CHEBI:8378',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:8378-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge CHEBI:8378-treats-MONDO:0015129-via_subclass: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:8378-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:8378-treats-MONDO:0015129: Found 1 support graphs, processed 3 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#49' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#49: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:chembl',
+  attribute_type_id: 'biolink:max_research_phase',
+  original_attribute_name: 'phase',
+  value: 'clinical_trial_phase_4'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_13_e_20' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 9b99225de8e0: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '7e833f8b' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+Edge d181de8f7c93: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '0701bbaa' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'String',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drug-repurposing-hub',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'String',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+Edge d2f9bd3918c4: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_22_e_28' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 64b5ca32990d: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:Attribute',
+  value: [ 'DB00860_MESH_D000224_1', 'DB00635_MESH_D000224_1' ],
+  original_attribute_name: 'drugmechdb_path_id'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:8378-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge c35ac2d41691: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '4163c78c' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Edge 1182ec9d35c8: Found 1 support graphs, processed 2 support edges
+
+--- Processing Result 7 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:8382, nodeName: Prednisone
+✓ Assigned sn (CHEBI:8382) as subject node: Prednisone
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'Prednisone',
+  result_subjectNode_id: 'CHEBI:8382',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:8382-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:8382-treats-MONDO:0015129: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#12' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#12: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:chembl',
+  attribute_type_id: 'biolink:max_research_phase',
+  original_attribute_name: 'phase',
+  value: 'clinical_trial_phase_4'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'String',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drug-repurposing-hub',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'String',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '386750e3' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+Edge 8215f5146ff2: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+
+--- Processing Result 8 ---
+Node binding keys: [ 'on', 'sn' ]
+Processing key: on, nodeId: MONDO:0008733, nodeName: familial glucocorticoid deficiency
+✓ Assigned on (MONDO:0008733) as object node: familial glucocorticoid deficiency
+Processing key: sn, nodeId: CHEBI:5781, nodeName: cortisol sodium phosphate
+✓ Assigned sn (CHEBI:5781) as subject node: cortisol sodium phosphate
+Extracted result data: {
+  result_subjectNode_name: 'cortisol sodium phosphate',
+  result_subjectNode_id: 'CHEBI:5781',
+  result_objectNode_name: 'familial glucocorticoid deficiency',
+  result_objectNode_id: 'MONDO:0008733'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#37' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#37: Found 1 support graphs, processed 1 support edges
+
+--- Processing Result 9 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:28689, nodeName: Prasterone
+✓ Assigned sn (CHEBI:28689) as subject node: Prasterone
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'Prasterone',
+  result_subjectNode_id: 'CHEBI:28689',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:28689-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:28689-treats-MONDO:0015129: Found 1 support graphs, processed 3 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: [
+    'CHEBI:28689---biolink:biolink_in_clinical_trials_for---None---None---None---MONDO:0015129---ClinicalTrialsKG:'
+  ],
+  value_type_id: 'metatype:String',
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: 'The IDs of the original RTX-KG2pre edge(s) corresponding to this edge prior to any synonymization or remapping.',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  original_attribute_name: null,
+  value: 'knowledge_assertion',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  original_attribute_name: null,
+  value: 'manual_agent',
+  value_type_id: null,
+  attribute_source: 'infores:rtx-kg2',
+  value_url: null,
+  description: null,
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:original_predicate',
+  original_attribute_name: null,
+  value: 'biolink:in_clinical_trials_for',
+  value_type_id: 'biolink:predicate',
+  attribute_source: 'infores:arax',
+  value_url: null,
+  description: 'Predicate as it appears in RTX-KG2, prior to alteration by ARAX.',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'medik:auxiliary_graph#10' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+attribute {
+  attribute_source: 'infores:unsecret-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+Edge medik:creative_edge#10: Found 1 support graphs, processed 1 support edges
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:improving-agent',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+attribute {
+  attribute_source: 'infores:improving-agent',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'prediction'
+}
+attribute {
+  attribute_source: 'infores:improving-agent',
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'ag_6934793' ]
+}
+Found support graph
+Processing support graph
+Edge i_6934793: Found 1 support graphs, processed 1 support edges
+
+--- Processing Result 10 ---
+Node binding keys: [ 'sn', 'on' ]
+Processing key: sn, nodeId: CHEBI:3077, nodeName: Betamethasone
+✓ Assigned sn (CHEBI:3077) as subject node: Betamethasone
+Processing key: on, nodeId: MONDO:0015129, nodeName: Addison Disease
+✓ Assigned on (MONDO:0015129) as object node: Addison Disease
+Extracted result data: {
+  result_subjectNode_name: 'Betamethasone',
+  result_subjectNode_id: 'CHEBI:3077',
+  result_objectNode_name: 'Addison Disease',
+  result_objectNode_id: 'MONDO:0015129'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:supporting_study',
+  attributes: [
+    {
+      attribute_type_id: 'clinical_trial_phase',
+      value: 4,
+      value_type_id: 'biolink:ResearchPhaseEnum'
+    },
+    { attribute_type_id: 'tested', value: 'yes' },
+    { attribute_type_id: 'primary_purpose', value: 'TREATMENT' },
+    { attribute_type_id: 'intervention_model', value: 'CROSSOVER' },
+    { attribute_type_id: 'clinical_trial_status', value: 'UNKNOWN' },
+    { attribute_type_id: 'start_date', value: '2021-03-02' },
+    {
+      attribute_type_id: 'study_size',
+      value: 30,
+      value_type_id: 'metatype:Integer'
+    },
+    { attribute_type_id: 'enrollment_type', value: 'ESTIMATED' },
+    { attribute_type_id: 'age_range', value: '20 years to 65 years' },
+    {
+      attribute_type_id: 'child',
+      value: false,
+      value_type_id: 'metatype:Boolean'
+    },
+    {
+      attribute_type_id: 'adult',
+      value: true,
+      value_type_id: 'metatype:Boolean'
+    },
+    {
+      attribute_type_id: 'older_adult',
+      value: true,
+      value_type_id: 'metatype:Boolean'
+    }
+  ],
+  value: 'NCT03210545',
+  value_url: 'https://clinicaltrials.gov/study/NCT03210545?tab=table'
+}
+attribute {
+  attribute_type_id: 'biolink:max_research_phase',
+  value: 4,
+  value_type_id: 'biolink:ResearchPhaseEnum'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+attribute {
+  attribute_type_id: 'clinical_trial_tested_intervention',
+  value: 'yes',
+  value_type_id: 'metatype:String'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'intervention_boxed_warning',
+  value: '5/206'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:multiomics-clinicaltrials',
+  attribute_type_id: 'elevate_to_prediction',
+  value: false,
+  value_type_id: 'metatype:Boolean'
+}
+attribute {
+  attribute_type_id: 'biolink:clinical_approval_status',
+  value: 'biolink:approved_for_condition',
+  value_type_id: 'biolink:ClinicalApprovalStatusEnum'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:3077-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge CHEBI:3077-treats-MONDO:0015129-via_subclass: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'inferred-CHEBI:3077-treats-MONDO:0015129-support0' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:knowledge_level', value: 'prediction' }
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'computational_model'
+}
+Edge inferred-CHEBI:3077-treats-MONDO:0015129: Found 1 support graphs, processed 3 support edges
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute { attribute_type_id: 'biolink:agent_type', value: 'manual_agent' }
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+Running processSupportGraphs
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute {
+  attribute_source: 'infores:spoke',
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_16_e_20' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge f1500cf1a42d: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:drugcentral',
+  attributes: []
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion'
+}
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'aux_e_24_e_28' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 5a06c138b9d7: Found 1 support graphs, processed 2 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment'
+}
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ 'support0-CHEBI:3077-treats-MONDO:0015129-via_subclass' ]
+}
+Found support graph
+Processing support graph
+attribute { attribute_type_id: 'biolink:agent_type', value: 'automated_agent' }
+Edge 9d1a1a6e5ead: Found 1 support graphs, processed 4 support edges
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'knowledge_assertion',
+  original_attribute_name: 'knowledge_level'
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  original_attribute_name: 'agent_type'
+}
+attribute {
+  attribute_type_id: 'biolink:Attribute',
+  value: [ 'DB00443_MESH_D000224_1' ],
+  original_attribute_name: 'drugmechdb_path_id'
+}
+Running processSupportGraphs
+attribute {
+  attribute_type_id: 'biolink:support_graphs',
+  value: [ '770decff' ],
+  attribute_source: 'infores:aragorn'
+}
+Found support graph
+Processing support graph
+attribute {
+  attribute_type_id: 'biolink:knowledge_level',
+  value: 'logical_entailment',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:knowledge_level',
+  attribute_source: 'infores:aragorn',
+  attributes: []
+}
+attribute {
+  attribute_type_id: 'biolink:agent_type',
+  value: 'manual_agent',
+  value_type_id: 'string',
+  original_attribute_name: 'biolink:agent_type',
+  attribute_source: 'infores:sider',
+  attributes: []
+}
+Edge 442989e0c553: Found 1 support graphs, processed 2 support edges
+
+=== FINAL SUMMARY ===
+Total edges with support graph attributes: 49
+Total processed rows: 110
+Original edges: 2373
+Support graph edges added: -2263
+
+============================================================
+TOP 10 ROWS OF SIMPLIFIED DATA:
+============================================================
+
+--- Row 1 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:service-provider-trapi
+Publications: 0 found
+
+--- Row 2 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:drugcentral
+Publications: 0 found
+
+--- Row 3 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:repodb
+Publications: 0 found
+
+--- Row 4 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:drugcentral
+Publications: 0 found
+
+--- Row 5 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0018479
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats congenital adrenal hyperplasia
+Primary Source: infores:drugcentral
+Publications: 0 found
+
+--- Row 6 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:drugcentral
+Publications: 0 found
+
+--- Row 7 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:drugcentral
+Publications: 0 found
+
+--- Row 8 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:ctd
+Publications: 1 found
+
+--- Row 9 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:sider
+Publications: 0 found
+
+--- Row 10 ---
+Result Subject: fludrocortisone acetate (ID: CHEBI:5102)
+Result Object: Addison Disease (ID: MONDO:0015129)
+Edge: CHEBI:5102 -> MONDO:0015129
+Predicate: biolink:treats
+Phrase: fludrocortisone acetate biolink:treats Addison Disease
+Primary Source: infores:spoke
+Publications: 0 found
+
+============================================================
+SUMMARY:
+============================================================
+Total rows processed: 110
+Results count: 582
+Nodes count: 668
+Edges count: 2373
+Node types found: subject, object
+
+Processed data saved to: data/exports/processed-simplified-data.json

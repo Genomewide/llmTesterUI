@@ -208,14 +208,14 @@ For actual medical decisions, please consult with qualified healthcare providers
         return await window.electronAPI.saveProject(project);
       } else {
         // Fallback to localStorage for web version
-        const projects = JSON.parse(localStorage.getItem('llmTesterProjects') || '[]');
+      const projects = JSON.parse(localStorage.getItem('llmTesterProjects') || '[]');
         const existingIndex = projects.findIndex((p: any) => p.id === project.id);
         if (existingIndex >= 0) {
           projects[existingIndex] = project;
         } else {
-          projects.push(project);
+      projects.push(project);
         }
-        localStorage.setItem('llmTesterProjects', JSON.stringify(projects));
+      localStorage.setItem('llmTesterProjects', JSON.stringify(projects));
         return { success: true };
       }
     } catch (error) {
@@ -231,16 +231,16 @@ For actual medical decisions, please consult with qualified healthcare providers
         return await window.electronAPI.loadProjects();
       } else {
         // Fallback to localStorage for web version
-        const projects = JSON.parse(localStorage.getItem('llmTesterProjects') || '[]');
-        return projects.map((p: any) => ({
-          ...p,
-          createdAt: new Date(p.createdAt),
-          updatedAt: new Date(p.updatedAt),
-          interactions: p.interactions.map((i: any) => ({
-            ...i,
-            timestamp: new Date(i.timestamp)
-          }))
-        }));
+      const projects = JSON.parse(localStorage.getItem('llmTesterProjects') || '[]');
+      return projects.map((p: any) => ({
+        ...p,
+        createdAt: new Date(p.createdAt),
+        updatedAt: new Date(p.updatedAt),
+        interactions: p.interactions.map((i: any) => ({
+          ...i,
+          timestamp: new Date(i.timestamp)
+        }))
+      }));
       }
     } catch (error) {
       console.error('Error loading projects:', error);
@@ -376,5 +376,39 @@ For actual medical decisions, please consult with qualified healthcare providers
       createdAt: new Date(),
       recordCount: data.length
     };
+  }
+
+  static async fetchArsData(pk: string, environment: string = 'prod'): Promise<{
+    success: boolean;
+    data?: any;
+    error?: string;
+    pk?: string;
+    environment?: string;
+    timestamp?: string;
+  }> {
+    try {
+      // Check if we're in Electron environment
+      if (window.electronAPI && window.electronAPI.fetchArsData) {
+        return await window.electronAPI.fetchArsData(pk, environment);
+      }
+      
+      // Fallback for web environment - you would implement actual API call here
+      // For now, return an error indicating this is only available in Electron
+      return {
+        success: false,
+        error: 'ARS data fetching is only available in Electron mode. Please use the desktop application.',
+        pk,
+        environment,
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch ARS data',
+        pk,
+        environment,
+        timestamp: new Date().toISOString()
+      };
+    }
   }
 } 

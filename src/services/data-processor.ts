@@ -6,6 +6,7 @@ export class DataProcessor {
   private nodes: Record<string, ARSNode> = {};
   private auxiliary_graphs: Record<string, any> = {};
   private results: ARSResult[] = [];
+  private supportGraphCount: number = 0;
 
   /**
    * Process the raw ARS API response into flattened data
@@ -61,7 +62,8 @@ export class DataProcessor {
       this.results = message.results || [];
       this.edges = message.knowledge_graph?.edges || {};
       this.nodes = message.knowledge_graph?.nodes || {};
-      this.auxiliary_graphs = message.knowledge_graph?.auxiliary_graphs || {};
+      this.auxiliary_graphs = message.auxiliary_graphs || {};
+      this.supportGraphCount = 0;
 
       console.log(`Processing ${this.results.length} results, ${Object.keys(this.nodes).length} nodes, ${Object.keys(this.edges).length} edges`);
 
@@ -76,7 +78,9 @@ export class DataProcessor {
         timestamp: new Date().toISOString(),
         resultsCount: this.results.length,
         nodesCount: Object.keys(this.nodes).length,
-        edgesCount: Object.keys(this.edges).length
+        edgesCount: Object.keys(this.edges).length,
+        supportGraphCount: this.supportGraphCount,
+        totalProcessedRows: this.allRows.length
       };
 
       console.log(`Processing complete. Generated ${this.allRows.length} flattened rows`);
@@ -198,16 +202,184 @@ export class DataProcessor {
   private processEdge(resultData: any, edgeId: string): void {
     try {
       const edge = this.edges[edgeId];
+      console.log("Running processEdge");
       if (!edge) {
         console.warn(`Edge ${edgeId} not found in knowledge graph`);
         return;
       }
 
+      // Process the main edge
       const edgeData = this.extractEdgeData(edge, edgeId);
       const combinedData = { ...resultData, ...edgeData };
       this.allRows.push(combinedData);
+
+      // Process support graphs if they exist
+      this.processSupportGraphs(resultData, edge, edgeId);
     } catch (error) {
       console.error(`Error processing edge ${edgeId}:`, error);
+    }
+  }
+
+  /**
+   * Process support graphs for an edge
+   */
+  private processSupportGraphs(resultData: any, edge: ARSEdge, edgeId: string): void {
+    console.log("Running processSupportGraphs");
+    const attributes = edge.attributes || [];
+    let supportGraphsFound = 0;
+    let totalSupportEdges = 0;
+    
+    attributes.forEach((attribute: any) => {
+      if (attribute.attribute_type_id === 'biolink:support_graphs') {
+        this.supportGraphCount++;
+        supportGraphsFound++;
+        
+        const supportGraphIds = Array.isArray(attribute.value) ? attribute.value : [attribute.value];
+        
+        supportGraphIds.forEach((graphId: string) => {
+          const supportGraph = this.auxiliary_graphs[graphId];
+          if (supportGraph && supportGraph.edges) {
+            totalSupportEdges += supportGraph.edges.length;
+            
+            supportGraph.edges.forEach((supportEdgeId: string) => {
+              this.processSupportEdge(resultData, supportEdgeId, graphId);
+            });
+          }
+        });
+      }
+    });
+    
+    if (supportGraphsFound > 0) {
+      console.log(`Edge ${edgeId}: Found ${supportGraphsFound} support graphs, processed ${totalSupportEdges} support edges`);
+    }
+  }
+
+  /**
+   * Process a single edge from a support graph
+   */
+  private processSupportEdge(resultData: any, supportEdgeId: string, graphId: string): void {
+    try {
+      // Try to find the actual edge data in the auxiliary graph
+      const supportGraph = this.auxiliary_graphs[graphId];
+      if (!supportGraph || !supportGraph.edges) {
+        console.log(`❌ Support graph ${graphId} not found or has no edges`);
+        return;
+      }
+      
+      // Look for the edge data in the support graph
+      let edgeData = null;
+      
+      if (Array.isArray(supportGraph.edges)) {
+        // If edges is an array, check if the support edge ID exists in the array
+        if (supportGraph.edges.includes(supportEdgeId)) {
+          // The support edge ID exists in the auxiliary graph, now look up the actual edge data
+          // in the main knowledge graph's edges object
+          edgeData = this.edges[supportEdgeId];
+          if (!edgeData) {
+            console.log(`❌ Edge ${supportEdgeId} found in auxiliary graph but not in main edges object`);
+            return;
+          }
+        }
+      } else {
+        // If edges is an object, try direct lookup using the support edge ID as key
+        edgeData = supportGraph.edges[supportEdgeId];
+      }
+      
+      if (!edgeData) {
+        console.log(`❌ Edge ${supportEdgeId} not found in support graph ${graphId}`);
+        return;
+      }
+      
+      // Extract edge information from the edge data
+      let subject = 'Unknown';
+      let object = 'Unknown';
+      let predicate = 'Unknown';
+      let primary_source = 'N/A';
+      
+      if (typeof edgeData === 'object' && edgeData !== null) {
+        // edgeData is an edge object with subject, object, predicate properties
+        subject = edgeData.subject || 'Unknown';
+        object = edgeData.object || 'Unknown';
+        predicate = edgeData.predicate || 'Unknown';
+        
+        // Extract primary source from sources array
+        if (edgeData.sources && Array.isArray(edgeData.sources)) {
+          const primarySource = edgeData.sources.find((source: any) => source.resource_role === 'primary_knowledge_source');
+          if (primarySource) {
+            primary_source = primarySource.resource_id;
+          }
+        }
+      } else if (typeof edgeData === 'string') {
+        // Handle different edge ID formats for string-based edge data
+        if (edgeData.includes('--')) {
+          // Format: "infores:source:subject--predicate--object--infores:source"
+          const parts = edgeData.split('--');
+          if (parts.length >= 3) {
+            subject = parts[0].split(':').slice(-1)[0]; // Get last part after last colon
+            predicate = parts[1];
+            object = parts[2].split(':').slice(-1)[0]; // Get last part after last colon
+            primary_source = parts.length > 3 ? parts[3] : 'N/A';
+          }
+        } else if (edgeData.includes('-')) {
+          // Format: "expanded-MONDO:0018479-subclass_of-MONDO:0015129"
+          const parts = edgeData.split('-');
+          if (parts.length >= 3) {
+            subject = parts[1]; // MONDO:0018479
+            predicate = parts[2]; // subclass_of
+            object = parts[3]; // MONDO:0015129
+          }
+        } else if (edgeData.startsWith('medik:edge#')) {
+          // Format: "medik:edge#6" - this is a simple reference
+          subject = 'medik_edge';
+          predicate = 'reference';
+          object = edgeData;
+        } else {
+          // For hash-based IDs, we can't extract much info
+          subject = 'hash_edge';
+          predicate = 'reference';
+          object = edgeData;
+        }
+      }
+      
+      // Get node names from the nodes object
+      const subjectNode = this.nodes[subject];
+      const objectNode = this.nodes[object];
+      
+      // Extract publications from edge attributes (following Python pattern)
+      let publications: string[] = [];
+      let publications_count = 0;
+      
+      if (edgeData.attributes && Array.isArray(edgeData.attributes)) {
+        const publicationAttribute = edgeData.attributes.find(
+          (attr: any) => attr.attribute_type_id === 'biolink:publications'
+        );
+        if (publicationAttribute) {
+          publications = Array.isArray(publicationAttribute.value) ? publicationAttribute.value : [publicationAttribute.value];
+          publications_count = publications.length;
+        }
+      }
+      
+      const supportEdgeData = {
+        edge_id: supportEdgeId,
+        edge_object: object,
+        edge_subject: subject,
+        edge_subjectNode_name: subjectNode?.name || 'Unknown',
+        edge_objectNode_name: objectNode?.name || 'Unknown',
+        predicate: predicate,
+        phrase: `${subjectNode?.name || subject} ${this.cleanPredicate(predicate)} ${objectNode?.name || object}`,
+        primary_source: primary_source,
+        publications: publications.length > 0 ? publications.join(';') : 'N/A',
+        publications_count: publications_count,
+        support_graph_id: graphId,
+        edge_type: 'support'
+      };
+      
+      const combinedData = { ...resultData, ...supportEdgeData };
+      this.allRows.push(combinedData);
+      
+      console.log(`✅ Added support edge: ${subject} ${predicate} ${object} from graph ${graphId}`);
+    } catch (error) {
+      console.error(`❌ Error processing support edge ${supportEdgeId}:`, error);
     }
   }
 
@@ -250,11 +422,14 @@ export class DataProcessor {
       edge_id: edgeId,
       edge_object: edge.object,
       edge_subject: edge.subject,
+      edge_subjectNode_name: subjectNode?.name || 'Unknown',
+      edge_objectNode_name: objectNode?.name || 'Unknown',
       predicate: edge.predicate,
       phrase: phrase || 'N/A',
       primary_source: primary_source || 'N/A',
       publications: publications.length > 0 ? publications.join(';') : 'N/A',
-      publications_count: publications.length
+      publications_count: publications.length,
+      edge_type: 'primary'
     };
   }
 
@@ -268,6 +443,27 @@ export class DataProcessor {
       return 'N/A';
     }
     
-    return `${subjectName} ${predicate} ${objectName}`;
+    // Clean up the predicate for display
+    const cleanPredicate = this.cleanPredicate(predicate);
+    
+    return `${subjectName} ${cleanPredicate} ${objectName}`;
+  }
+
+  /**
+   * Clean up predicate for display
+   */
+  private cleanPredicate(predicate: string): string {
+    // Remove biolink: prefix
+    let cleanPred = predicate.replace(/^biolink:/, '');
+    
+    // Replace specific complex predicate
+    if (cleanPred === 'treats_or_applied_or_studied_to_treat') {
+      return 'studied to treat';
+    }
+    
+    // Replace all underscores with spaces
+    cleanPred = cleanPred.replace(/_/g, ' ');
+    
+    return cleanPred;
   }
 } 

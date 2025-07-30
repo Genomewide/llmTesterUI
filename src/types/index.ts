@@ -162,6 +162,8 @@ export interface ProcessedData {
     resultsCount: number;
     nodesCount: number;
     edgesCount: number;
+    supportGraphCount: number;
+    totalProcessedRows: number;
   };
 }
 

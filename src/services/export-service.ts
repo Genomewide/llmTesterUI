@@ -1,4 +1,4 @@
-import { ProcessedData } from './data-processor';
+import { ProcessedData } from '../types';
 
 export interface ExportResult {
   success: boolean;
