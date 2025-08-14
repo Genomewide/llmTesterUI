@@ -6,11 +6,12 @@ export const CONFIG = {
   OLLAMA_URL: 'http://localhost:11434',
   
   // Default model settings
-  DEFAULT_TEMPERATURE: 0.7,
+  DEFAULT_TEMPERATURE: 0.2,
   DEFAULT_MAX_TOKENS: 4096,
   
   // Available MedGemma models (if you want to add more)
   MEDGEMMA_MODELS: [
+    'jwang580/medgemma_27b_text_it',
     'medgem-custom:latest',
     'medgemma:2b',
     'medgemma:7b',

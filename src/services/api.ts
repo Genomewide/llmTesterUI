@@ -5,12 +5,20 @@ import { v4 as uuidv4 } from 'uuid';
 // Mock data for development - replace with actual API calls
 const MOCK_MODELS: LLMModel[] = [
   {
+    id: 'jwang580/medgemma_27b_text_it:latest',
+    name: 'MedGemma 27B Text (Medical)',
+    provider: 'Ollama',
+    supportsStructuredOutput: true,
+    maxTokens: 131072,
+    temperature: 0.2
+  },
+  {
     id: 'medgem-custom:latest',
     name: 'MedGem Custom (3.2B)',
     provider: 'Ollama',
     supportsStructuredOutput: true,
     maxTokens: 131072,
-    temperature: 0.7
+    temperature: 0.2
   },
   {
     id: 'llama3.2:latest',
@@ -156,7 +164,7 @@ export class APIService {
         model: config.modelId,
         prompt: config.userInput,
         system: config.systemPrompt,
-        stream: false,
+        stream: true, // Enable streaming
         options: {
           temperature: config.temperature || CONFIG.DEFAULT_TEMPERATURE,
           num_predict: config.maxTokens || CONFIG.DEFAULT_MAX_TOKENS
@@ -175,8 +183,40 @@ export class APIService {
         throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
-      return data.response || 'No response from model';
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No response body reader available');
+      }
+
+      let fullResponse = '';
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n').filter(line => line.trim());
+
+        for (const line of lines) {
+          try {
+            const data = JSON.parse(line);
+            if (data.response) {
+              fullResponse += data.response;
+              // Here you could emit a progress event for real-time updates
+            }
+            if (data.done) {
+              return fullResponse;
+            }
+          } catch (e) {
+            // Skip malformed JSON lines
+            continue;
+          }
+        }
+      }
+
+      return fullResponse;
     } catch (error) {
       console.error('Error calling Ollama API:', error);
       throw new Error(`Failed to call Ollama API: ${error instanceof Error ? error.message : 'Unknown error'}`);
