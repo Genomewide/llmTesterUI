@@ -149,12 +149,36 @@ export interface ARSResult {
   [key: string]: any;
 }
 
+export interface AbstractData {
+  pubmedId: string;
+  title: string;
+  journal: string;
+  publicationDate: string;
+  abstract: string;
+}
+
 export interface ProcessedData {
   results: ARSResult[];
   edges: Record<string, ARSEdge>;
   nodes: Record<string, ARSNode>;
   auxiliary_graphs: Record<string, any>;
-  flattenedRows: any[];
+  flattenedRows: Array<{
+    result_counter: number;
+    edge_id: string;
+    edge_subject: string;
+    edge_subjectNode_name: string;
+    edge_object: string;
+    edge_objectNode_name: string;
+    predicate: string;
+    edge_type: string;
+    primary_source: string;
+    result_subjectNode_name: string;
+    result_objectNode_name: string;
+    publications: string;
+    publications_count: number;
+    abstracts?: AbstractData[];
+    abstract_count?: number;
+  }>;
   metadata: {
     pk: string;
     environment: string;

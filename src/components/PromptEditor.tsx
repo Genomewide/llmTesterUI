@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Box,
@@ -8,7 +8,10 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Alert
 } from '@mui/material';
 import SubjectNodeSelector from './SubjectNodeSelector';
 import { ProcessedData } from '../types';
@@ -25,6 +28,9 @@ interface PromptEditorProps {
   supportsStructuredOutput: boolean;
   loading?: boolean;
   importedData?: ProcessedData | null;
+  includeAbstracts?: boolean;
+  abstractLimit?: number;
+  onAbstractOptionsChange?: (include: boolean, limit?: number) => void;
 }
 
 const PromptEditor: React.FC<PromptEditorProps> = ({
@@ -38,8 +44,12 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
   onOutputFormatChange,
   supportsStructuredOutput,
   loading = false,
-  importedData = null
+  importedData = null,
+  includeAbstracts = false,
+  abstractLimit,
+  onAbstractOptionsChange
 }) => {
+  const [abstractSelection, setAbstractSelection] = useState<'none' | 'all' | 'recent'>('none');
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
@@ -65,13 +75,47 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
         
         {/* Data Selector - only show when data is available */}
         {importedData && (
-          <SubjectNodeSelector
-            data={importedData}
-            onSubjectSelect={onUserInputChange}
-            disabled={loading}
-            placeholder="Select a subject node to populate input..."
-            label="Data Selector"
-          />
+          <>
+            <SubjectNodeSelector
+              data={importedData}
+              onSubjectSelect={onUserInputChange}
+              disabled={loading}
+              includeAbstracts={includeAbstracts}
+              abstractLimit={abstractLimit}
+              placeholder="Select a subject node to populate input..."
+              label="Data Selector"
+            />
+            
+            {/* Abstract Options */}
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                Abstract Options
+              </Typography>
+              <FormControl component="fieldset">
+                <RadioGroup 
+                  value={abstractSelection} 
+                  onChange={(e) => {
+                    const value = e.target.value as 'none' | 'all' | 'recent';
+                    setAbstractSelection(value);
+                    if (onAbstractOptionsChange) {
+                      const shouldInclude = value !== 'none';
+                      const limit = value === 'recent' ? (abstractLimit || 3) : undefined;
+                      onAbstractOptionsChange(shouldInclude, limit);
+                    }
+                  }}
+                >
+                  <FormControlLabel value="none" control={<Radio />} label="No Abstracts" />
+                  <FormControlLabel value="all" control={<Radio />} label="All Abstracts" />
+                  <FormControlLabel value="recent" control={<Radio />} label="Top 3 Most Recent" />
+                </RadioGroup>
+                {abstractSelection !== 'none' && (
+                  <Alert severity="info" sx={{ mt: 1 }}>
+                    Note: PubMed API has a rate limit of 3 requests per second. Abstracts will be fetched when you select a subject.
+                  </Alert>
+                )}
+              </FormControl>
+            </Box>
+          </>
         )}
         
         <TextField

@@ -40,6 +40,8 @@ const DataFetcher: React.FC<DataFetcherProps> = ({
     setError(null);
     setProcessedData(null);
 
+
+
     try {
       console.log('Calling fetchArsData with:', { pk, environment });
       
@@ -50,12 +52,19 @@ const DataFetcher: React.FC<DataFetcherProps> = ({
       if (response.success) {
         // Process the data using our DataProcessor
         const processor = new DataProcessor();
-        const processed = processor.processKnowledgeGraph(response.data, pk, environment);
         
-        setProcessedData(processed);
-        
-        if (onDataProcessed) {
-          onDataProcessed(processed);
+        // Always process without abstracts initially - they'll be fetched later when needed
+        try {
+          const processed = await processor.processKnowledgeGraph(response.data, pk, environment);
+          
+          setProcessedData(processed);
+          
+          if (onDataProcessed) {
+            onDataProcessed(processed);
+          }
+        } catch (error) {
+          console.error('Error processing data:', error);
+          setError('Failed to process data');
         }
       } else {
         setError(response.error || 'Failed to fetch data');

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Container,
@@ -130,6 +130,11 @@ Provide references to the consulted abstracts wherever possible.`);
   // Data import state
   const [importedData, setImportedData] = useState<ProcessedData | null>(null);
   
+  // Abstract state
+  const [includeAbstracts, setIncludeAbstracts] = useState<boolean>(false);
+  const [abstractLimit, setAbstractLimit] = useState<number | null>(null);
+  // const [abstractFetching, setAbstractFetching] = useState<boolean>(false);
+  
   // Streaming state
   const [streamingResponse, setStreamingResponse] = useState<string>('');
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
@@ -141,11 +146,35 @@ Provide references to the consulted abstracts wherever possible.`);
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
+  const loadModels = async () => {
+    try {
+      const availableModels = await APIService.getAvailableModels();
+      setModels(availableModels);
+    } catch (error) {
+      setError('Failed to load models');
+      console.error('Error loading models:', error);
+    }
+  };
+
+  const loadProjects = useCallback(async () => {
+    try {
+      const savedProjects = await APIService.loadProjects();
+      setProjects(savedProjects);
+      
+      // Auto-select the first project if no current project is selected
+      if (savedProjects.length > 0 && !currentProject) {
+        setCurrentProject(savedProjects[0]);
+      }
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    }
+  }, [currentProject]);
+
   // Load models and projects on component mount
   useEffect(() => {
     loadModels();
     loadProjects();
-  }, []);
+  }, [loadProjects]);
 
   // Set first model as selected when models load
   useEffect(() => {
@@ -160,30 +189,6 @@ Provide references to the consulted abstracts wherever possible.`);
       setCurrentProject(projects[0]);
     }
   }, [projects, currentProject]);
-
-  const loadModels = async () => {
-    try {
-      const availableModels = await APIService.getAvailableModels();
-      setModels(availableModels);
-    } catch (error) {
-      setError('Failed to load models');
-      console.error('Error loading models:', error);
-    }
-  };
-
-  const loadProjects = async () => {
-    try {
-      const savedProjects = await APIService.loadProjects();
-      setProjects(savedProjects);
-      
-      // Auto-select the first project if no current project is selected
-      if (savedProjects.length > 0 && !currentProject) {
-        setCurrentProject(savedProjects[0]);
-      }
-    } catch (error) {
-      console.error('Error loading projects:', error);
-    }
-  };
 
   const handleTestModel = async () => {
     if (!selectedModel || !userInput.trim()) {
@@ -412,6 +417,12 @@ Provide references to the consulted abstracts wherever possible.`);
                       supportsStructuredOutput={selectedModelData?.supportsStructuredOutput || false}
                       loading={loading || isStreaming}
                       importedData={importedData}
+                      includeAbstracts={includeAbstracts}
+                      abstractLimit={abstractLimit || undefined}
+                      onAbstractOptionsChange={(include, limit) => {
+                        setIncludeAbstracts(include);
+                        setAbstractLimit(limit || null);
+                      }}
                     />
                   </Grid>
 

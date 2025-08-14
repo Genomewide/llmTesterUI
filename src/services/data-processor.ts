@@ -1,4 +1,5 @@
 import { ARSNode, ARSEdge, ARSResult, ProcessedData } from '../types';
+import { PubMedApiService } from './pubmed-api';
 
 export class DataProcessor {
   private allRows: any[] = [];
@@ -11,7 +12,20 @@ export class DataProcessor {
   /**
    * Process the raw ARS API response into flattened data
    */
-  processKnowledgeGraph(data: any, pk: string, environment: string): ProcessedData {
+  async processKnowledgeGraph(data: any, pk: string, environment: string): Promise<ProcessedData> {
+    return this.processWithAbstracts(data, pk, environment, false);
+  }
+
+  /**
+   * Process the raw ARS API response into flattened data with optional abstract enrichment
+   */
+  async processWithAbstracts(
+    data: any, 
+    pk: string, 
+    environment: string, 
+    includeAbstracts: boolean = false, 
+    abstractLimit?: number
+  ): Promise<ProcessedData> {
     console.log('Starting data processing...');
     
     // Reset state
@@ -71,6 +85,11 @@ export class DataProcessor {
       this.results.forEach((result: ARSResult, resultIndex: number) => {
         this.processResult(result, resultIndex + 1);
       });
+
+      // Enrich with abstracts if requested
+      if (includeAbstracts) {
+        await this.enrichWithAbstracts(this.allRows, abstractLimit);
+      }
 
       const metadata = {
         pk,
@@ -465,5 +484,62 @@ export class DataProcessor {
     cleanPred = cleanPred.replace(/_/g, ' ');
     
     return cleanPred;
+  }
+
+  /**
+   * Enrich flattened rows with abstracts
+   */
+  private async enrichWithAbstracts(flattenedRows: any[], abstractLimit?: number): Promise<void> {
+    const pubmedApi = new PubMedApiService();
+    
+    for (const row of flattenedRows) {
+      if (row.publications && row.publications !== 'N/A') {
+        const pubmedIds = this.extractPubMedIds(row.publications);
+        
+        if (pubmedIds.length > 0) {
+          try {
+            // Fetch abstracts based on limit preference
+            const abstracts = abstractLimit 
+              ? await pubmedApi.fetchTopRecentAbstracts(pubmedIds, abstractLimit)
+              : await pubmedApi.fetchAbstracts(pubmedIds);
+            
+            row.abstracts = abstracts;
+            row.abstract_count = abstracts.length;
+          } catch (error) {
+            console.warn(`Failed to fetch abstracts for row: ${row.edge_id}`, error);
+            row.abstracts = [];
+            row.abstract_count = 0;
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Extract PubMed IDs from publication strings
+   */
+  private extractPubMedIds(publications: string): string[] {
+    if (!publications || publications === 'N/A') return [];
+
+    // Split by common delimiters
+    const parts = publications.split(/[;,\s]+/);
+    
+    return parts
+      .map(part => part.trim())
+      .filter(part => {
+        // Extract PubMed ID from various formats
+        const pubmedMatch = part.match(/pubmed:?(\d+)/i);
+        if (pubmedMatch) {
+          return pubmedMatch[1];
+        }
+        
+        // Check if it's just a number (assume it's a PubMed ID)
+        if (/^\d+$/.test(part)) {
+          return part;
+        }
+        
+        return null;
+      })
+      .filter(Boolean) as string[];
   }
 } 
