@@ -15,12 +15,16 @@ interface ResponseViewerProps {
   interaction: Interaction | null;
   loading: boolean;
   error: string | null;
+  streamingResponse?: string;
+  isStreaming?: boolean;
 }
 
 const ResponseViewer: React.FC<ResponseViewerProps> = ({
   interaction,
   loading,
-  error
+  error,
+  streamingResponse = '',
+  isStreaming = false
 }) => {
   const isJsonResponse = interaction?.response && (
     interaction.response.trim().startsWith('{') || 
@@ -29,7 +33,7 @@ const ResponseViewer: React.FC<ResponseViewerProps> = ({
 
   const isStructuredOutput = interaction?.structuredOutput;
 
-  if (loading) {
+  if (loading && !isStreaming) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
         <CircularProgress />
@@ -45,7 +49,7 @@ const ResponseViewer: React.FC<ResponseViewerProps> = ({
     );
   }
 
-  if (!interaction) {
+  if (!interaction && !isStreaming) {
     return (
       <Paper sx={{ p: 3, textAlign: 'center', bgcolor: 'grey.50' }}>
         <Typography variant="body1" color="text.secondary">
@@ -57,37 +61,76 @@ const ResponseViewer: React.FC<ResponseViewerProps> = ({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-        <Chip 
-          label={`Model: ${interaction.modelName}`} 
-          color="primary" 
-          variant="outlined"
-        />
-        <Chip 
-          label={`Response Time: ${interaction.responseTime}ms`} 
-          color="secondary" 
-          variant="outlined"
-        />
-        <Chip 
-          label={`Length: ${interaction.response.length} chars`} 
-          color="info" 
-          variant="outlined"
-        />
-        {interaction.structuredOutput && (
+      {/* Show streaming status */}
+      {isStreaming && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Generating response...
+        </Alert>
+      )}
+      
+      {/* Show metadata chips only when not streaming */}
+      {!isStreaming && interaction && (
+        <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
           <Chip 
-            label={`Format: ${interaction.outputFormat?.toUpperCase()}`} 
-            color="success" 
+            label={`Model: ${interaction.modelName}`} 
+            color="primary" 
             variant="outlined"
           />
-        )}
-      </Box>
+          <Chip 
+            label={`Response Time: ${interaction.responseTime}ms`} 
+            color="secondary" 
+            variant="outlined"
+          />
+          <Chip 
+            label={`Length: ${interaction.response.length} chars`} 
+            color="info" 
+            variant="outlined"
+          />
+          {interaction.structuredOutput && (
+            <Chip 
+              label={`Format: ${interaction.outputFormat?.toUpperCase()}`} 
+              color="success" 
+              variant="outlined"
+            />
+          )}
+        </Box>
+      )}
 
       <Paper sx={{ p: 2 }}>
         <Typography variant="h6" gutterBottom>
           Response
         </Typography>
         
-        {isJsonResponse || isStructuredOutput ? (
+        {/* Show streaming text or final response */}
+        {isStreaming ? (
+          <Box
+            component="pre"
+            sx={{
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              lineHeight: 1.5,
+              bgcolor: 'grey.50',
+              p: 2,
+              borderRadius: 1,
+              border: '1px solid',
+              borderColor: 'grey.300',
+              position: 'relative'
+            }}
+          >
+            {streamingResponse}
+            <span 
+              className="streaming-cursor"
+              style={{
+                animation: 'blink 1s infinite',
+                color: '#1976d2'
+              }}
+            >
+              |
+            </span>
+          </Box>
+        ) : interaction && (isJsonResponse || isStructuredOutput) ? (
           <SyntaxHighlighter
             language="json"
             style={tomorrow}
@@ -99,7 +142,7 @@ const ResponseViewer: React.FC<ResponseViewerProps> = ({
           >
             {interaction.response}
           </SyntaxHighlighter>
-        ) : (
+        ) : interaction ? (
           <Box
             component="pre"
             sx={{
@@ -117,34 +160,37 @@ const ResponseViewer: React.FC<ResponseViewerProps> = ({
           >
             {interaction.response}
           </Box>
-        )}
+        ) : null}
       </Paper>
 
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="h6" gutterBottom>
-          Metadata
-        </Typography>
-        <Paper sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography variant="body2">
-              <strong>Timestamp:</strong> {interaction.timestamp.toLocaleString()}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Model ID:</strong> {interaction.modelId}
-            </Typography>
-            {interaction.metadata?.temperature && (
+      {/* Show metadata only when not streaming */}
+      {!isStreaming && interaction && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Metadata
+          </Typography>
+          <Paper sx={{ p: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Typography variant="body2">
-                <strong>Temperature:</strong> {interaction.metadata.temperature}
+                <strong>Timestamp:</strong> {interaction.timestamp.toLocaleString()}
               </Typography>
-            )}
-            {interaction.metadata?.maxTokens && (
               <Typography variant="body2">
-                <strong>Max Tokens:</strong> {interaction.metadata.maxTokens}
+                <strong>Model ID:</strong> {interaction.modelId}
               </Typography>
-            )}
-          </Box>
-        </Paper>
-      </Box>
+              {interaction.metadata?.temperature && (
+                <Typography variant="body2">
+                  <strong>Temperature:</strong> {interaction.metadata.temperature}
+                </Typography>
+              )}
+              {interaction.metadata?.maxTokens && (
+                <Typography variant="body2">
+                  <strong>Max Tokens:</strong> {interaction.metadata.maxTokens}
+                </Typography>
+              )}
+            </Box>
+          </Paper>
+        </Box>
+      )}
     </Box>
   );
 };

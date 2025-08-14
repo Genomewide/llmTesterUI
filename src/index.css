@@ -15,4 +15,14 @@ code {
 
 * {
   box-sizing: border-box;
+}
+
+/* Streaming cursor animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.streaming-cursor {
+  animation: blink 1s infinite;
 } 

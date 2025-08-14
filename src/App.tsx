@@ -42,7 +42,80 @@ const App: React.FC = () => {
   // State management
   const [models, setModels] = useState<LLMModel[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>('');
-  const [systemPrompt, setSystemPrompt] = useState<string>('You are a helpful AI assistant.');
+  const [systemPrompt, setSystemPrompt] = useState<string>(`You are an expert at reading, analyzing, and summarizing biomedical information. 
+
+Your goal is to analyze data that presents certain claims about
+treatments for a disease and to create a brief, readable summary of all
+the data presented. The audience for the summary are highly informed
+readers--professionals, researchers, and graduate students from all
+aspects of biomedicine.
+
+The structure of a summary should be 2-4 paragraphs long, depending on the
+amount of data present. It should never exceed 5 paragraphs even for very large
+data sets. It must use compact prose containing appropriate technical terms.
+Do not create tables; use bullets sparingly and only if essential.
+
+A successful summary will be one that identifies patterns and commonalities in
+the proposed treatment(s). Provide opinions based on the information provided and
+from the available tools as to whether the proposals are strong and plausible,
+or more speculative and unproven. Assume a technical audience; do not over-
+explain fundamental concepts. Rely on your own knowledge when it will add
+value but do not augment to the point that you are bringing in too much that
+is not in the presented material--your job is primarily to summarize what is
+presented.
+
+There will be three main sections in each data set that you will analyze.
+Note that the ontology being used for nodes and edges in the reasoning are
+drawn from the Biolink model.
+
+1. Query information
+
+This section will briefly present the question being asked, which will be of
+the form "What drugs may treat X" where X is a disease or a disease-like
+entity. A brief description of the disease may be provided.
+
+2. Node/Entity information
+
+This section will provide an index of all the nodes mentioned in the data
+along with their primary categories (using the Biolink model). Typically,
+a CURIE will also be provided, which is a canonical identifier for that
+biological entity. 
+
+3. Edge/Reasoning information
+
+This section will be a list of edges expressed as a triple (subject-predicate-object), 
+each of which represents a specific claim in a knowledge graph. The totality of
+that knowledge graph (all the edges in it) represents the reasoning that supports
+the claim that drug or molecule X is a direct or indirect agent in a type of treatment
+or treatment approach for the disease referenced in the first section.
+
+The predicates in the edges are also taken from the Biolink ontology.
+Note that these edges will not be in any particular order--you must
+carefully analyze the totality of the graph (i.e. all edges) for each result
+and determine the transitive relationships between them to fully understand
+the proposed mechanism of treatment.
+
+An edge may be accompanied by a list of publication IDs which can be used
+to retrieve abstracts and publication metadata to ascertain the level
+and quality and strength of support for the edge. Tools will be
+provided to you to retrieve abstracts from PubMed/PMC--if so,
+use those tools to enhance your understanding of the depth and validity
+of the reasoning steps offered in the edges. Particularly for edges where
+the relationship may be more speculative, but publication IDs are present,
+don't assume that the presence of those IDs means they are all relevant.
+Take the time to retrieve the abstracts and analyze whether they truly
+support the claim represented by the edge. In particular, if your knowledge
+tells you that the claim seems suspect, you MUST investigate the abstracts.
+**DO NOT RELY ON YOUR INTERNAL KNOWLEDGE, IF PRESENT, OF THE CONTENTS OF
+PAPERS BASED ON PUBLICATION IDS** Always consult the abstract if you
+are going to reference the paper.
+
+In conclusion: work hard to identify patterns and exceptions. Think of your
+summary as the opening to a literature review, where you are providing a guide
+to the most important and interesting aspects of a large amount of information
+on a focused topic. Use all the tools provided and work very hard to explore
+and explain all of the various patterns and mechanisms within that result.
+Provide references to the consulted abstracts wherever possible.`);
   const [userInput, setUserInput] = useState<string>('');
   const [structuredOutput, setStructuredOutput] = useState<boolean>(false);
   const [outputFormat, setOutputFormat] = useState<string>('json');
@@ -56,6 +129,11 @@ const App: React.FC = () => {
   
   // Data import state
   const [importedData, setImportedData] = useState<ProcessedData | null>(null);
+  
+  // Streaming state
+  const [streamingResponse, setStreamingResponse] = useState<string>('');
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
+  const [streamingError, setStreamingError] = useState<string | null>(null);
   
 
   
@@ -76,6 +154,13 @@ const App: React.FC = () => {
     }
   }, [models, selectedModel]);
 
+  // Set first project as selected when projects load
+  useEffect(() => {
+    if (projects.length > 0 && !currentProject) {
+      setCurrentProject(projects[0]);
+    }
+  }, [projects, currentProject]);
+
   const loadModels = async () => {
     try {
       const availableModels = await APIService.getAvailableModels();
@@ -90,6 +175,11 @@ const App: React.FC = () => {
     try {
       const savedProjects = await APIService.loadProjects();
       setProjects(savedProjects);
+      
+      // Auto-select the first project if no current project is selected
+      if (savedProjects.length > 0 && !currentProject) {
+        setCurrentProject(savedProjects[0]);
+      }
     } catch (error) {
       console.error('Error loading projects:', error);
     }
@@ -107,6 +197,9 @@ const App: React.FC = () => {
     }
 
     setLoading(true);
+    setIsStreaming(true);
+    setStreamingResponse('');
+    setStreamingError(null);
     setError(null);
 
     try {
@@ -118,8 +211,14 @@ const App: React.FC = () => {
         outputFormat: structuredOutput ? outputFormat : undefined
       };
 
-      const interaction = await APIService.testModel(config);
+      // Pass progress callback for streaming
+      const interaction = await APIService.testModel(config, (chunk: string) => {
+        setStreamingResponse(prev => prev + chunk);
+      });
+      
       setCurrentInteraction(interaction);
+      setIsStreaming(false);
+      setStreamingResponse('');
 
       // Add interaction to current project
       const updatedProject = {
@@ -140,9 +239,11 @@ const App: React.FC = () => {
       setSnackbarOpen(true);
     } catch (error) {
       setError('Failed to test model. Please try again.');
+      setStreamingError('Streaming failed. Please try again.');
       console.error('Error testing model:', error);
     } finally {
       setLoading(false);
+      setIsStreaming(false);
     }
   };
 
@@ -159,6 +260,10 @@ const App: React.FC = () => {
     setCurrentProject(newProject);
     // Clear user input when creating new project, but keep imported data
     setUserInput('');
+    // Reset streaming state when creating new project
+    setIsStreaming(false);
+    setStreamingResponse('');
+    setStreamingError(null);
     APIService.saveProject(newProject);
     
     setSnackbarMessage('Project created successfully!');
@@ -169,6 +274,10 @@ const App: React.FC = () => {
     setCurrentProject(project);
     // Clear user input when switching projects, but keep imported data
     setUserInput('');
+    // Reset streaming state when switching projects
+    setIsStreaming(false);
+    setStreamingResponse('');
+    setStreamingError(null);
   };
 
   const handleProjectDelete = (projectId: string) => {
@@ -282,7 +391,7 @@ const App: React.FC = () => {
                       models={models}
                       selectedModel={selectedModel}
                       onModelChange={setSelectedModel}
-                      loading={loading}
+                      loading={loading || isStreaming}
                     />
                   </Grid>
 
@@ -301,7 +410,7 @@ const App: React.FC = () => {
                       onStructuredOutputChange={setStructuredOutput}
                       onOutputFormatChange={setOutputFormat}
                       supportsStructuredOutput={selectedModelData?.supportsStructuredOutput || false}
-                      loading={loading}
+                      loading={loading || isStreaming}
                       importedData={importedData}
                     />
                   </Grid>
@@ -316,7 +425,7 @@ const App: React.FC = () => {
                         onClick={handleTestModel}
                         disabled={loading || !selectedModel || !userInput.trim() || !currentProject}
                       >
-                        {loading ? 'Testing...' : 'Run Test'}
+                        {loading ? (isStreaming ? 'Generating...' : 'Testing...') : 'Run Test'}
                       </Button>
                       
                       {currentProject && (
@@ -340,6 +449,8 @@ const App: React.FC = () => {
                       interaction={currentInteraction}
                       loading={loading}
                       error={error}
+                      streamingResponse={streamingResponse}
+                      isStreaming={isStreaming}
                     />
                   </Grid>
                 </Grid>

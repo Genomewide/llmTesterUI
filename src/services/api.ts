@@ -114,7 +114,7 @@ export class APIService {
     }
   }
 
-  static async testModel(config: TestConfig): Promise<Interaction> {
+  static async testModel(config: TestConfig, onProgress?: (chunk: string) => void): Promise<Interaction> {
     try {
       const startTime = Date.now();
       
@@ -122,8 +122,8 @@ export class APIService {
       let modelName: string;
       
       if (CONFIG.USE_REAL_OLLAMA) {
-        // Real Ollama API call
-        const ollamaResponse = await this.callOllamaAPI(config);
+        // Real Ollama API call with streaming
+        const ollamaResponse = await this.callOllamaAPI(config, onProgress);
         response = ollamaResponse;
         modelName = config.modelId;
       } else {
@@ -158,7 +158,7 @@ export class APIService {
     }
   }
 
-  private static async callOllamaAPI(config: TestConfig): Promise<string> {
+  private static async callOllamaAPI(config: TestConfig, onProgress?: (chunk: string) => void): Promise<string> {
     try {
       const requestBody = {
         model: config.modelId,
@@ -204,7 +204,10 @@ export class APIService {
             const data = JSON.parse(line);
             if (data.response) {
               fullResponse += data.response;
-              // Here you could emit a progress event for real-time updates
+              // Emit progress event for real-time updates
+              if (onProgress) {
+                onProgress(data.response);
+              }
             }
             if (data.done) {
               return fullResponse;
