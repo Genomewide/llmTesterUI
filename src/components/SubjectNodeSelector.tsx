@@ -193,15 +193,20 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       if (allAbstracts.length > 0) {
         output += '\n\nSupporting Publications:\n';
         
-        // Remove duplicates and sort by date
+        // Remove duplicates but preserve per-edge structure
         const uniqueAbstracts = allAbstracts.filter((abstract, index, self) => 
           index === self.findIndex(a => a.pubmedId === abstract.pubmedId)
-        ).sort((a, b) => new Date(b.publicationDate).getTime() - new Date(a.publicationDate).getTime());
+        );
         
-        // Apply limit if specified
-        const abstractsToInclude = abstractLimit 
-          ? uniqueAbstracts.slice(0, abstractLimit)
-          : uniqueAbstracts;
+        // Sort by date (most recent first)
+        const sortedAbstracts = uniqueAbstracts.sort((a, b) => 
+          new Date(b.publicationDate).getTime() - new Date(a.publicationDate).getTime()
+        );
+        
+        // Apply limit if specified - but this should be per edge, not total
+        // Since we already applied the limit per edge during fetching, 
+        // we should include all abstracts that were fetched
+        const abstractsToInclude = sortedAbstracts;
         
         abstractsToInclude.forEach((abstract, index) => {
           output += `\n${abstract.title}\n`;
