@@ -22,7 +22,8 @@ import {
   History as HistoryIcon,
   ExpandMore as ExpandMoreIcon,
   ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon
+  ChevronRight as ChevronRightIcon,
+  Settings as SettingsIcon
 } from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
 import { LLMModel, Project, Interaction, TestConfig, ProcessedData } from './types';
@@ -159,6 +160,7 @@ Provide references to the consulted abstracts wherever possible.`);
   const [projectsCollapsed, setProjectsCollapsed] = useState<boolean>(false);
   const [historyCollapsed, setHistoryCollapsed] = useState<boolean>(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(true);
+  const [modelSelectionVisible, setModelSelectionVisible] = useState<boolean>(false);
 
   const loadModels = async () => {
     try {
@@ -506,9 +508,21 @@ Provide references to the consulted abstracts wherever possible.`);
             {/* Main Content */}
             <Grid item xs={12} md={sidebarCollapsed ? 11 : 8}>
               <Paper sx={{ p: 3 }}>
-                <Typography variant="h4" gutterBottom>
-                  LLM Model Tester
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h4">
+                    LLM Model Tester
+                  </Typography>
+                  <IconButton
+                    onClick={() => setModelSelectionVisible(!modelSelectionVisible)}
+                    sx={{ 
+                      color: modelSelectionVisible ? 'primary.main' : 'text.secondary',
+                      transition: 'color 0.2s'
+                    }}
+                    title="Model Settings"
+                  >
+                    <SettingsIcon />
+                  </IconButton>
+                </Box>
 
                 {error && (
                   <Alert severity="error" sx={{ mb: 2 }}>
@@ -518,17 +532,19 @@ Provide references to the consulted abstracts wherever possible.`);
 
                 <Grid container spacing={3}>
                   {/* Model Selection */}
-                  <Grid item xs={12}>
-                    <Typography variant="h6" gutterBottom>
-                      Model Selection
-                    </Typography>
-                    <ModelSelector
-                      models={models}
-                      selectedModel={selectedModel}
-                      onModelChange={setSelectedModel}
-                      loading={loading || isStreaming}
-                    />
-                  </Grid>
+                  {modelSelectionVisible && (
+                    <Grid item xs={12}>
+                      <Typography variant="h6" gutterBottom>
+                        Model Selection
+                      </Typography>
+                      <ModelSelector
+                        models={models}
+                        selectedModel={selectedModel}
+                        onModelChange={setSelectedModel}
+                        loading={loading || isStreaming}
+                      />
+                    </Grid>
+                  )}
 
                   {/* Prompt Editor */}
                   <Grid item xs={12}>
