@@ -155,6 +155,7 @@ export class DataProcessor {
     let result_subjectNode_id = 'N/A';
     let result_objectNode_name = 'N/A';
     let result_objectNode_id = 'N/A';
+    let disease_description = 'N/A';
 
     // Extract node data - handle specific node binding keys like 'on' and 'sn'
     nodeBindingKeys.forEach((key) => {
@@ -170,6 +171,23 @@ export class DataProcessor {
           result_objectNode_id = nodeId;
           result_objectNode_name = node?.name || 'N/A';
           console.log(`✓ Assigned ${key} (${nodeId}) as object node: ${node?.name}`);
+          
+          // Extract disease description from node attributes
+          if (node?.attributes && Array.isArray(node.attributes)) {
+            const diseaseOntologyAttr = node.attributes.find((attr: any) => 
+              attr.attribute_type_id === 'biolink:description' || 
+              (attr.value && typeof attr.value === 'object' && attr.value.def)
+            );
+            
+            if (diseaseOntologyAttr) {
+              if (diseaseOntologyAttr.value && typeof diseaseOntologyAttr.value === 'object' && diseaseOntologyAttr.value.def) {
+                disease_description = diseaseOntologyAttr.value.def;
+              } else if (typeof diseaseOntologyAttr.value === 'string') {
+                disease_description = diseaseOntologyAttr.value;
+              }
+              console.log(`✓ Found disease description: ${disease_description}`);
+            }
+          }
         } else if (key === 'sn' || key === 'subject_node') {
           result_subjectNode_id = nodeId;
           result_subjectNode_name = node?.name || 'N/A';
@@ -180,6 +198,23 @@ export class DataProcessor {
           result_objectNode_id = nodeId;
           result_objectNode_name = node?.name || 'N/A';
           console.log(`✓ Assigned ${key} (${nodeId}) as object node: ${node?.name}`);
+          
+          // Extract disease description from node attributes
+          if (node?.attributes && Array.isArray(node.attributes)) {
+            const diseaseOntologyAttr = node.attributes.find((attr: any) => 
+              attr.attribute_type_id === 'biolink:description' || 
+              (attr.value && typeof attr.value === 'object' && attr.value.def)
+            );
+            
+            if (diseaseOntologyAttr) {
+              if (diseaseOntologyAttr.value && typeof diseaseOntologyAttr.value === 'object' && diseaseOntologyAttr.value.def) {
+                disease_description = diseaseOntologyAttr.value.def;
+              } else if (typeof diseaseOntologyAttr.value === 'string') {
+                disease_description = diseaseOntologyAttr.value;
+              }
+              console.log(`✓ Found disease description: ${disease_description}`);
+            }
+          }
         } else if (key === 'n1' || key === 'n01') {
           result_subjectNode_id = nodeId;
           result_subjectNode_name = node?.name || 'N/A';
@@ -190,6 +225,23 @@ export class DataProcessor {
           result_objectNode_id = nodeId;
           result_objectNode_name = node?.name || 'N/A';
           console.log(`✓ Assigned ${key} (${nodeId}) as object node (fallback): ${node?.name}`);
+          
+          // Extract disease description from node attributes
+          if (node?.attributes && Array.isArray(node.attributes)) {
+            const diseaseOntologyAttr = node.attributes.find((attr: any) => 
+              attr.attribute_type_id === 'biolink:description' || 
+              (attr.value && typeof attr.value === 'object' && attr.value.def)
+            );
+            
+            if (diseaseOntologyAttr) {
+              if (diseaseOntologyAttr.value && typeof diseaseOntologyAttr.value === 'object' && diseaseOntologyAttr.value.def) {
+                disease_description = diseaseOntologyAttr.value.def;
+              } else if (typeof diseaseOntologyAttr.value === 'string') {
+                disease_description = diseaseOntologyAttr.value;
+              }
+              console.log(`✓ Found disease description: ${disease_description}`);
+            }
+          }
         } else if (key.includes('1') || key.includes('subject')) {
           result_subjectNode_id = nodeId;
           result_subjectNode_name = node?.name || 'N/A';
@@ -198,11 +250,16 @@ export class DataProcessor {
       }
     });
 
+    // Create overarching claim: "X treats Y"
+    const overarching_claim = `${result_subjectNode_name} treats ${result_objectNode_name}`;
+
     console.log('Extracted result data:', {
       result_subjectNode_name,
       result_subjectNode_id,
       result_objectNode_name,
-      result_objectNode_id
+      result_objectNode_id,
+      overarching_claim,
+      disease_description
     });
 
     return {
@@ -211,6 +268,8 @@ export class DataProcessor {
       result_subjectNode_id,
       result_objectNode_name,
       result_objectNode_id,
+      overarching_claim,
+      disease_description,
       result_counter: resultCounter
     };
   }

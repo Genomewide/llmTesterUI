@@ -12,7 +12,7 @@ import { PubMedApiService } from '../services/pubmed-api';
 
 interface SubjectNodeSelectorProps {
   data: ProcessedData | null;
-  onSubjectSelect: (formattedData: string) => void;
+  onSubjectSelect: (formattedData: string, selectedSubject?: string) => void;
   disabled?: boolean;
   includeAbstracts?: boolean;
   abstractLimit?: number;
@@ -59,12 +59,12 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       try {
         const enrichedFilteredData = await fetchAbstractsForSubject(filteredData);
         const formattedData = formatDataForInput(enrichedFilteredData);
-        onSubjectSelect(formattedData);
+        onSubjectSelect(formattedData, selectedSubject);
       } catch (error) {
         console.error('❌ Error fetching abstracts:', error);
         // Fall back to data without abstracts
         const formattedData = formatDataForInput(filteredData);
-        onSubjectSelect(formattedData);
+        onSubjectSelect(formattedData, selectedSubject);
       } finally {
         setAbstractFetching(false);
       }
@@ -72,7 +72,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       console.log('📝 No abstracts requested, formatting data directly');
       // Format data for user input without abstracts
       const formattedData = formatDataForInput(filteredData);
-      onSubjectSelect(formattedData);
+      onSubjectSelect(formattedData, selectedSubject);
     }
   };
 
@@ -83,31 +83,54 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     
     console.log('🔍 Starting abstract fetching for subject with', filteredData.length, 'edges');
     
-    for (const row of enrichedData) {
-      if (row.publications && row.publications !== 'N/A') {
-        const pubmedIds = extractPubMedIds(row.publications);
-        console.log('📄 Edge:', row.predicate, '| Publications:', row.publications, '| PubMed IDs:', pubmedIds);
-        
-        if (pubmedIds.length > 0) {
-          try {
-            console.log('🔄 Fetching abstracts for edge:', row.predicate, '| Limit:', abstractLimit || 'all');
-            // Apply limit per edge, not across all edges
-            const abstracts = abstractLimit 
-              ? await pubmedApi.fetchTopRecentAbstracts(pubmedIds, abstractLimit)
-              : await pubmedApi.fetchAbstracts(pubmedIds);
-            row.abstracts = abstracts;
-            row.abstract_count = abstracts.length;
-            console.log('✅ Edge completed:', row.predicate, '| Abstracts fetched:', abstracts.length);
-          } catch (error) {
-            console.error('❌ Error fetching abstracts for row:', error);
-            row.abstracts = [];
-            row.abstract_count = 0;
+    // Helper function to add delay between API calls
+    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    
+    // Process edges in smaller batches to avoid overwhelming the API
+    const BATCH_SIZE = 3; // Process 3 edges at a time
+    const DELAY_BETWEEN_BATCHES = 1000; // 1 second delay between batches
+    
+    for (let i = 0; i < enrichedData.length; i += BATCH_SIZE) {
+      const batch = enrichedData.slice(i, i + BATCH_SIZE);
+      console.log(`📦 Processing batch ${Math.floor(i / BATCH_SIZE) + 1} of ${Math.ceil(enrichedData.length / BATCH_SIZE)} (${batch.length} edges)`);
+      
+      // Process each edge in the current batch
+      for (const row of batch) {
+        if (row.publications && row.publications !== 'N/A') {
+          const pubmedIds = extractPubMedIds(row.publications);
+          console.log('📄 Edge:', row.predicate, '| Publications:', row.publications, '| PubMed IDs:', pubmedIds);
+          
+          if (pubmedIds.length > 0) {
+            try {
+              // Add delay before API call to respect rate limit (3 requests/second = 0.33 seconds per request)
+              console.log('⏳ Adding delay before API call to respect rate limit...');
+              await delay(333); // 0.33 seconds = 333 milliseconds
+              
+              console.log('🔄 Fetching abstracts for edge:', row.predicate, '| Limit:', abstractLimit || 'all');
+              // Apply limit per edge, not across all edges
+              const abstracts = abstractLimit 
+                ? await pubmedApi.fetchTopRecentAbstracts(pubmedIds, abstractLimit)
+                : await pubmedApi.fetchAbstracts(pubmedIds);
+              row.abstracts = abstracts;
+              row.abstract_count = abstracts.length;
+              console.log('✅ Edge completed:', row.predicate, '| Abstracts fetched:', abstracts.length);
+            } catch (error) {
+              console.error('❌ Error fetching abstracts for row:', error);
+              row.abstracts = [];
+              row.abstract_count = 0;
+            }
+          } else {
+            console.log('⚠️ No PubMed IDs found for edge:', row.predicate);
           }
         } else {
-          console.log('⚠️ No PubMed IDs found for edge:', row.predicate);
+          console.log('⚠️ No publications for edge:', row.predicate);
         }
-      } else {
-        console.log('⚠️ No publications for edge:', row.predicate);
+      }
+      
+      // Add delay between batches (except for the last batch)
+      if (i + BATCH_SIZE < enrichedData.length) {
+        console.log(`⏳ Adding delay between batches...`);
+        await delay(DELAY_BETWEEN_BATCHES);
       }
     }
     
@@ -137,15 +160,116 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
 
   // Format filtered data for user input
   const formatDataForInput = (filteredData: any[]): string => {
+    if (filteredData.length === 0) {
+      return 'No data available for the selected subject.';
+    }
+
+    const firstRow = filteredData[0];
     let output = '';
+
+    // CLAIM SECTION
+    output += 'Claim\n';
+    output += '=====\n';
+    
+    // Create the claim using the selected subject node name
+    if (firstRow.result_subjectNode_name && firstRow.result_objectNode_name && 
+        firstRow.result_subjectNode_name !== 'N/A' && firstRow.result_objectNode_name !== 'N/A') {
+      output += `${firstRow.result_subjectNode_name} treats ${firstRow.result_objectNode_name}\n`;
+    } else {
+      output += 'Treatment claim not available\n';
+    }
+    
+    output += '\n';
+
+    // 1. QUERY INFORMATION
+    output += '1. Query Information\n';
+    output += '===================\n';
+    
+    // Create the query question based on the overarching claim
+    if (firstRow.overarching_claim && firstRow.overarching_claim !== 'N/A') {
+      const [drug, treats, disease] = firstRow.overarching_claim.split(' ');
+      output += `Question: What drugs may treat ${disease}?\n`;
+    } else {
+      output += `Question: What drugs may treat ${firstRow.result_objectNode_name}?\n`;
+    }
+    
+    // Add disease description if available
+    if (firstRow.disease_description && firstRow.disease_description !== 'N/A') {
+      output += `Disease Description: ${firstRow.disease_description}\n`;
+    }
+    
+    output += '\n';
+
+    // 2. NODE/ENTITY INFORMATION
+    output += '2. Node/Entity Information\n';
+    output += '=========================\n';
+    
+    // Collect unique nodes from the data
+    const uniqueNodes = new Map();
+    
+    filteredData.forEach(row => {
+      // Add subject node
+      if (row.result_subjectNode_id && row.result_subjectNode_id !== 'N/A') {
+        uniqueNodes.set(row.result_subjectNode_id, {
+          name: row.result_subjectNode_name,
+          id: row.result_subjectNode_id,
+          type: 'Drug/Chemical Entity'
+        });
+      }
+      
+      // Add object node (disease)
+      if (row.result_objectNode_id && row.result_objectNode_id !== 'N/A') {
+        uniqueNodes.set(row.result_objectNode_id, {
+          name: row.result_objectNode_name,
+          id: row.result_objectNode_id,
+          type: 'Disease'
+        });
+      }
+      
+      // Add edge subject and object nodes
+      if (row.edge_subject && row.edge_subject !== 'N/A') {
+        uniqueNodes.set(row.edge_subject, {
+          name: row.edge_subjectNode_name,
+          id: row.edge_subject,
+          type: 'Entity'
+        });
+      }
+      
+      if (row.edge_object && row.edge_object !== 'N/A') {
+        uniqueNodes.set(row.edge_object, {
+          name: row.edge_objectNode_name,
+          id: row.edge_object,
+          type: 'Entity'
+        });
+      }
+    });
+    
+    // Format node information
+    uniqueNodes.forEach((node, nodeId) => {
+      output += `- ${node.name} (${nodeId}) [${node.type}]\n`;
+    });
+    
+    output += '\n';
+
+    // 3. EDGE/REASONING INFORMATION
+    output += '3. Edge/Reasoning Information\n';
+    output += '============================\n';
     
     // Group phrases and count occurrences
-    const phraseCounts = new Map<string, { count: number; publications: Set<string>; abstracts: any[] }>();
+    const phraseCounts = new Map<string, { 
+      count: number; 
+      publications: Set<string>; 
+      abstracts: any[];
+      edge_id: string;
+      predicate: string;
+      sources: Set<string>; // Changed from primary_source to sources Set
+    }>();
     
     filteredData.forEach((row) => {
       const phrase = row.phrase;
       const publication = row.publications && row.publications !== 'N/A' ? row.publications : null;
       const abstracts = row.abstracts || [];
+      const source = row.primary_source && row.primary_source !== 'N/A' ? row.primary_source : null;
       
       if (phraseCounts.has(phrase)) {
         const existing = phraseCounts.get(phrase)!;
@@ -153,25 +277,26 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
         if (publication) {
           existing.publications.add(publication);
         }
+        if (source) {
+          existing.sources.add(source);
+        }
         existing.abstracts.push(...abstracts);
       } else {
         phraseCounts.set(phrase, {
           count: 1,
           publications: publication ? new Set([publication]) : new Set(),
-          abstracts: [...abstracts]
+          abstracts: [...abstracts],
+          edge_id: row.edge_id,
+          predicate: row.predicate,
+          sources: source ? new Set([source]) : new Set()
         });
       }
     });
     
-    // Format the grouped data
+    // Format the edge information
     const uniquePhrases = Array.from(phraseCounts.entries());
     uniquePhrases.forEach(([phrase, data], index) => {
-      // Add line space before each phrase (except the first one)
-      if (index > 0) {
-        output += '\n';
-      }
-      
-      // Add the phrase with count
+      // Add the edge with count
       if (data.count > 1) {
         output += `${phrase} (x${data.count})`;
       } else {
@@ -182,8 +307,20 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       if (data.publications.size > 0) {
         const publicationCount = data.publications.size;
         const publicationText = publicationCount === 1 ? 'publication' : 'publications';
-        output += ` supported by ${publicationCount} ${publicationText}`;
+        output += `: supported by ${publicationCount} ${publicationText}`;
       }
+      
+      // Add source information - show all unique sources
+      if (data.sources.size > 0) {
+        const sourcesArray = Array.from(data.sources);
+        if (sourcesArray.length === 1) {
+          output += ` [Source: ${sourcesArray[0]}]`;
+        } else {
+          output += ` [Sources: ${sourcesArray.join(', ')}]`;
+        }
+      }
+      
+      output += '\n';
     });
 
     // Add abstracts if requested
@@ -191,7 +328,8 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       const allAbstracts = Array.from(phraseCounts.values()).flatMap(data => data.abstracts);
       
       if (allAbstracts.length > 0) {
-        output += '\n\nSupporting Publications:\n';
+        output += '\nSupporting Publications:\n';
+        output += '======================\n';
         
         // Remove duplicates but preserve per-edge structure
         const uniqueAbstracts = allAbstracts.filter((abstract, index, self) => 

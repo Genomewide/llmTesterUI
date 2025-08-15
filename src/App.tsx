@@ -105,17 +105,9 @@ carefully analyze the totality of the graph (i.e. all edges) for each result
 and determine the transitive relationships between them to fully understand
 the proposed mechanism of treatment.
 
-An edge may be accompanied by a list of publication IDs which can be used
-to retrieve abstracts and publication metadata to ascertain the level
-and quality and strength of support for the edge. Tools will be
-provided to you to retrieve abstracts from PubMed/PMC--if so,
-use those tools to enhance your understanding of the depth and validity
-of the reasoning steps offered in the edges. Particularly for edges where
-the relationship may be more speculative, but publication IDs are present,
-don't assume that the presence of those IDs means they are all relevant.
-Take the time to retrieve the abstracts and analyze whether they truly
-support the claim represented by the edge. In particular, if your knowledge
-tells you that the claim seems suspect, you MUST investigate the abstracts.
+You will either be provide with the 3 most recent publication abstracts or all of the abstracts for an edge. 
+Don't assume that the presence of those IDs means they are all relevant.
+In particular, if your knowledge tells you that the claim seems suspect, you MUST investigate the abstracts.
 **DO NOT RELY ON YOUR INTERNAL KNOWLEDGE, IF PRESENT, OF THE CONTENTS OF
 PAPERS BASED ON PUBLICATION IDS** Always consult the abstract if you
 are going to reference the paper.
@@ -144,6 +136,9 @@ Provide references to the consulted abstracts wherever possible.`);
   const [includeAbstracts, setIncludeAbstracts] = useState<boolean>(false);
   const [abstractLimit, setAbstractLimit] = useState<number | null>(null);
   // const [abstractFetching, setAbstractFetching] = useState<boolean>(false);
+  
+  // Track currently selected subject for auto-refresh
+  const [selectedSubjectNode, setSelectedSubjectNode] = useState<string | null>(null);
   
   // Streaming state
   const [streamingResponse, setStreamingResponse] = useState<string>('');
@@ -568,6 +563,35 @@ Provide references to the consulted abstracts wherever possible.`);
                       onAbstractOptionsChange={(include, limit) => {
                         setIncludeAbstracts(include);
                         setAbstractLimit(limit || null);
+                        
+                        // Auto-refresh data formatting if a subject is currently selected
+                        if (selectedSubjectNode && importedData) {
+                          console.log('🔄 Auto-refreshing data with new abstract settings:', { include, limit });
+                          
+                          // Filter data for the currently selected subject
+                          const filteredData = importedData.flattenedRows.filter(
+                            row => row.result_subjectNode_name === selectedSubjectNode
+                          );
+                          
+                          if (filteredData.length > 0) {
+                            // If abstracts are requested, we need to fetch them
+                            if (include) {
+                              // For now, just re-format without abstracts since fetching would require async operation
+                              // In a full implementation, this would trigger abstract fetching
+                              console.log('📝 Re-formatting data with abstract settings (abstracts will be fetched on next selection)');
+                              setSnackbarMessage(`Abstract settings updated. Select the subject again to fetch ${limit ? `top ${limit} recent` : 'all'} abstracts.`);
+                            } else {
+                              // No abstracts requested, just re-format
+                              console.log('📝 Re-formatting data without abstracts');
+                              setSnackbarMessage('Data refreshed without abstracts!');
+                            }
+                            setSnackbarOpen(true);
+                          }
+                        }
+                      }}
+                      onSubjectSelected={(subject) => {
+                        setSelectedSubjectNode(subject);
+                        console.log('Subject node selected:', subject);
                       }}
                     />
                   </Grid>

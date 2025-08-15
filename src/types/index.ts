@@ -181,6 +181,10 @@ export interface ProcessedData {
     primary_source: string;
     result_subjectNode_name: string;
     result_objectNode_name: string;
+    result_subjectNode_id: string;
+    result_objectNode_id: string;
+    overarching_claim: string;
+    disease_description: string;
     publications: string;
     publications_count: number;
     abstracts?: AbstractData[];

@@ -34,6 +34,7 @@ interface PromptEditorProps {
   includeAbstracts?: boolean;
   abstractLimit?: number;
   onAbstractOptionsChange?: (include: boolean, limit?: number) => void;
+  onSubjectSelected?: (subject: string) => void;
 }
 
 const PromptEditor: React.FC<PromptEditorProps> = ({
@@ -50,7 +51,8 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
   importedData = null,
   includeAbstracts = false,
   abstractLimit,
-  onAbstractOptionsChange
+  onAbstractOptionsChange,
+  onSubjectSelected
 }) => {
   const [abstractSelection, setAbstractSelection] = useState<'none' | 'all' | 'recent'>('none');
   const [systemPromptExpanded, setSystemPromptExpanded] = useState<boolean>(false);
@@ -107,7 +109,13 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
           <>
             <SubjectNodeSelector
               data={importedData}
-              onSubjectSelect={onUserInputChange}
+              onSubjectSelect={(formattedData, selectedSubject) => {
+                onUserInputChange(formattedData);
+                // Track the selected subject for auto-refresh functionality
+                if (selectedSubject && onSubjectSelected) {
+                  onSubjectSelected(selectedSubject);
+                }
+              }}
               disabled={loading}
               includeAbstracts={includeAbstracts}
               abstractLimit={abstractLimit}
