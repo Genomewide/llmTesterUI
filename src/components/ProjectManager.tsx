@@ -90,11 +90,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">
-          <FolderIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Projects
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -105,7 +101,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
         </Button>
       </Box>
 
-      <Paper sx={{ maxHeight: 400, overflow: 'auto' }}>
+      <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
         <List>
           {projects.length === 0 ? (
             <ListItem>
@@ -188,7 +184,7 @@ const ProjectManager: React.FC<ProjectManagerProps> = ({
             })
           )}
         </List>
-      </Paper>
+      </Box>
 
       {/* Create Project Dialog */}
       <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>

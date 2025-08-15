@@ -62,11 +62,7 @@ const HistoryViewer: React.FC<HistoryViewerProps> = ({
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6">
-          <HistoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-          Test History
-        </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
         {selectedInteractions.length === 2 && (
           <Button
             variant="contained"
@@ -87,7 +83,7 @@ const HistoryViewer: React.FC<HistoryViewerProps> = ({
         </Paper>
       )}
 
-      <Paper sx={{ maxHeight: 600, overflow: 'auto' }}>
+      <Box sx={{ maxHeight: 600, overflow: 'auto' }}>
         {sortedInteractions.length === 0 ? (
           <Box sx={{ p: 3, textAlign: 'center' }}>
             <Typography variant="body1" color="text.secondary">
@@ -186,7 +182,7 @@ const HistoryViewer: React.FC<HistoryViewerProps> = ({
             );
           })
         )}
-      </Paper>
+      </Box>
 
       {/* Comparison Dialog */}
       <Dialog 

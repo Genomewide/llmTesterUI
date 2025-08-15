@@ -12,9 +12,18 @@ import {
   Toolbar,
   CssBaseline,
   ThemeProvider,
-  createTheme
+  createTheme,
+  IconButton
 } from '@mui/material';
-import { PlayArrow as PlayIcon, Save as SaveIcon } from '@mui/icons-material';
+import { 
+  PlayArrow as PlayIcon, 
+  Save as SaveIcon,
+  Folder as FolderIcon,
+  History as HistoryIcon,
+  ExpandMore as ExpandMoreIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon
+} from '@mui/icons-material';
 import { v4 as uuidv4 } from 'uuid';
 import { LLMModel, Project, Interaction, TestConfig, ProcessedData } from './types';
 import { APIService } from './services/api';
@@ -145,6 +154,11 @@ Provide references to the consulted abstracts wherever possible.`);
   // UI state
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  
+  // Collapsible sidebar state
+  const [projectsCollapsed, setProjectsCollapsed] = useState<boolean>(false);
+  const [historyCollapsed, setHistoryCollapsed] = useState<boolean>(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(true);
 
   const loadModels = async () => {
     try {
@@ -360,30 +374,137 @@ Provide references to the consulted abstracts wherever possible.`);
         <Container maxWidth="xl" sx={{ mt: 3, mb: 3 }}>
           <Grid container spacing={3}>
             {/* Left Sidebar - Projects and History */}
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Paper sx={{ p: 2, height: 'fit-content' }}>
-                  <ProjectManager
-                    projects={projects}
-                    currentProject={currentProject}
-                    onProjectSelect={handleProjectSelect}
-                    onProjectCreate={handleProjectCreate}
-                    onProjectDelete={handleProjectDelete}
-                    onProjectUpdate={handleProjectUpdate}
-                  />
+            <Grid item xs={12} md={sidebarCollapsed ? 1 : 4}>
+              <Box sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: 2,
+                transition: 'all 0.3s ease-in-out',
+                width: sidebarCollapsed ? 60 : '100%'
+              }}>
+                {/* Sidebar Toggle Button */}
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+                  <IconButton
+                    size="small"
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    sx={{ 
+                      transition: 'transform 0.2s',
+                      bgcolor: 'background.paper',
+                      boxShadow: 1
+                    }}
+                  >
+                    {sidebarCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                  </IconButton>
+                </Box>
+
+                {/* Projects Section */}
+                <Paper sx={{ 
+                  p: sidebarCollapsed ? 1 : 2, 
+                  height: 'fit-content',
+                  minHeight: sidebarCollapsed ? 200 : 'auto'
+                }}>
+                  {!sidebarCollapsed && (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Typography variant="h6">
+                        <FolderIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                        Projects
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => setProjectsCollapsed(!projectsCollapsed)}
+                        sx={{ transform: projectsCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+                      >
+                        <ExpandMoreIcon />
+                      </IconButton>
+                    </Box>
+                  )}
+                  
+                  {sidebarCollapsed ? (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                      <IconButton
+                        size="large"
+                        onClick={() => setSidebarCollapsed(false)}
+                        title="Projects"
+                        sx={{ color: 'primary.main' }}
+                      >
+                        <FolderIcon />
+                      </IconButton>
+                      <Typography variant="caption" sx={{ fontSize: '0.7rem', textAlign: 'center' }}>
+                        Projects
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{ 
+                      maxHeight: projectsCollapsed ? 0 : 'none',
+                      overflow: 'hidden',
+                      transition: 'max-height 0.3s ease-in-out'
+                    }}>
+                      <ProjectManager
+                        projects={projects}
+                        currentProject={currentProject}
+                        onProjectSelect={handleProjectSelect}
+                        onProjectCreate={handleProjectCreate}
+                        onProjectDelete={handleProjectDelete}
+                        onProjectUpdate={handleProjectUpdate}
+                      />
+                    </Box>
+                  )}
                 </Paper>
                 
-                <Paper sx={{ p: 2, height: 'fit-content', maxHeight: 600, overflow: 'auto' }}>
-                  <HistoryViewer
-                    interactions={currentProject?.interactions || []}
-                    onDeleteInteraction={handleDeleteInteraction}
-                  />
+                {/* History Section */}
+                <Paper sx={{ 
+                  p: sidebarCollapsed ? 1 : 2, 
+                  height: 'fit-content',
+                  minHeight: sidebarCollapsed ? 200 : 'auto'
+                }}>
+                  {!sidebarCollapsed && (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Typography variant="h6">
+                        <HistoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                        Test History
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={() => setHistoryCollapsed(!historyCollapsed)}
+                        sx={{ transform: historyCollapsed ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+                      >
+                        <ExpandMoreIcon />
+                      </IconButton>
+                    </Box>
+                  )}
+                  
+                  {sidebarCollapsed ? (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                      <IconButton
+                        size="large"
+                        onClick={() => setSidebarCollapsed(false)}
+                        title="Test History"
+                        sx={{ color: 'primary.main' }}
+                      >
+                        <HistoryIcon />
+                      </IconButton>
+                      <Typography variant="caption" sx={{ fontSize: '0.7rem', textAlign: 'center' }}>
+                        History
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Box sx={{ 
+                      maxHeight: historyCollapsed ? 0 : 600,
+                      overflow: 'auto',
+                      transition: 'max-height 0.3s ease-in-out'
+                    }}>
+                      <HistoryViewer
+                        interactions={currentProject?.interactions || []}
+                        onDeleteInteraction={handleDeleteInteraction}
+                      />
+                    </Box>
+                  )}
                 </Paper>
               </Box>
             </Grid>
 
             {/* Main Content */}
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={sidebarCollapsed ? 11 : 8}>
               <Paper sx={{ p: 3 }}>
                 <Typography variant="h4" gutterBottom>
                   LLM Model Tester

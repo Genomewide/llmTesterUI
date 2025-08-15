@@ -564,7 +564,7 @@ For issues and questions:
 
 ---
 
-**Note**: The Electron version provides enhanced capabilities for large file processing, local data storage, and full biomedical research integration. For production use with large datasets and PubMed integration, the Electron version is recommended.
+UI f**Note**: The Electron version provides enhanced capabilities for large file processing, local data storage, and full biomedical research integration. For production use with large datasets and PubMed integration, the Electron version is recommended.
 
 ## Example Biomedical Data
 
