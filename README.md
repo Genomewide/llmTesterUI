@@ -564,4 +564,90 @@ For issues and questions:
 
 ---
 
-**Note**: The Electron version provides enhanced capabilities for large file processing, local data storage, and full biomedical research integration. For production use with large datasets and PubMed integration, the Electron version is recommended. 
+**Note**: The Electron version provides enhanced capabilities for large file processing, local data storage, and full biomedical research integration. For production use with large datasets and PubMed integration, the Electron version is recommended.
+
+## Example Biomedical Data
+
+The following is an example of the type of biomedical data that can be processed and analyzed using this application:
+
+### Sample Data Structure
+
+```
+Prednisone treats Addison Disease (x19)
+Prednisone in clinical trials for Addison Disease
+Prednisone studied to treat Addison Disease (x4) supported by 1 publication
+Prednisone treats congenital adrenal hyperplasia (x5)
+congenital adrenal hyperplasia subclass of Addison Disease (x3)
+MC2R gene associated with condition hypoaldosteronism disease
+Prednisone affects ABCB1 supported by 1 publication
+Prednisone affects CTLA4 supported by 1 publication
+Hyponatremia manifestation of Addison Disease
+X-linked adrenal hypoplasia congenita subclass of Addison Disease (x2)
+triple-A syndrome subclass of Addison Disease
+CALCA gene associated with condition epilepsy supported by 1 publication
+ABCB1 gene associated with condition Vomiting supported by 1 publication
+epilepsy manifestation of Addison Disease
+Prednisone affects MC2R supported by 1 publication
+NR3C1 gene associated with condition hypoglycemia (x2) supported by 2 publications
+Prednisone affects VWF supported by 1 publication
+Prednisone affects TG supported by 1 publication
+NR3C1 gene associated with condition epilepsy supported by 1 publication
+VWF gene associated with condition epilepsy supported by 1 publication
+hypoglycemia manifestation of Addison Disease
+CTLA4 physically interacts with VANGL2 supported by 1 publication
+MC2R gene associated with condition congenital adrenal hyperplasia supported by 1 publication
+Vomiting manifestation of Addison Disease
+Prednisone affects NR3C1 (x3)
+Prednisone affects PTPRC supported by 1 publication
+NR3C1 gene associated with condition congenital adrenal hyperplasia (x2) supported by 1 publication
+CTLA4 physically interacts with PEX6 supported by 1 publication
+VANGL2 gene associated with condition Addison Disease
+MC2R gene associated with condition epilepsy
+PEX6 gene associated with condition Addison Disease
+Hyperkalemia manifestation of Addison Disease
+hypoaldosteronism disease subclass of Addison Disease
+ABCB1 gene associated with condition epilepsy (x2) supported by 2 publications
+MC2R gene associated with condition Hyponatremia
+MC2R gene associated with condition Vomiting
+MC2R gene associated with condition X-linked adrenal hypoplasia congenita (x2) supported by 1 publication
+PTPRC gene associated with condition tuberculosis supported by 1 publication
+tuberculosis causes Addison Disease supported by 1 publication
+Prednisone affects CYP2C19
+MC2R gene associated with condition Hyperkalemia
+Prednisone affects CALCA supported by 1 publication
+CYP2C19 gene associated with condition epilepsy supported by 1 publication
+TG gene associated with condition epilepsy supported by 1 publication
+NR3C1 gene associated with condition hypoaldosteronism disease
+PTPRC gene associated with condition epilepsy supported by 1 publication
+MC2R gene associated with condition triple-A syndrome supported by 1 publication
+Prednisone treats classic congenital adrenal hyperplasia due to 21-hydroxylase deficiency
+Prednisone studied to treat classic congenital adrenal hyperplasia due to 21-hydroxylase deficiency supported by 1 publication
+Prednisone studied to treat congenital adrenal hyperplasia supported by 1 publication
+```
+
+### Supporting Publications
+
+The application can automatically fetch and include supporting publications from PubMed, such as:
+
+#### Example Publication 1
+**Title**: Microglial pattern recognition via IL-33 promotes synaptic refinement in developing corticothalamic circuits in mice.  
+**Journal**: The Journal of experimental medicine (2023)  
+**Abstract**: Microglia are critical regulators of brain development that engulf synaptic proteins during postnatal synapse remodeling. However, the mechanisms through which microglia sense the brain environment are not well defined. Here, we characterized the regulatory program downstream of interleukin-33 (IL-33), a cytokine that promotes microglial synapse remodeling...
+
+#### Example Publication 2
+**Title**: The MDR1 polymorphisms at exons 21 and 26 predict steroid weaning in pediatric heart transplant patients.  
+**Journal**: Human immunology (2002)  
+**Abstract**: Various polymorphisms of the MDR1 gene that encodes for P-glycoprotein (P-gp), a transmembrane pump, have been identified. A silent mutation C3435T in exon 26 and a G2677T mutation in exon 21 have been correlated with P-gp expression and function in humans. The objectives of this study were (a) to determine whether the MDR1 exon 21 and exon 26 polymorphisms were related to steroid weaning in a pediatric heart transplant (HTx) population, and (b) to determine whether an association exist between the MDR1 exon 21 and exon 26 polymorphisms in these patients...
+
+### Data Processing Capabilities
+
+This application can process complex biomedical data including:
+
+- **Drug-Disease Relationships**: Treatment associations, clinical trials, and therapeutic effects
+- **Gene-Disease Associations**: Genetic factors and their relationship to conditions
+- **Protein Interactions**: Physical interactions between proteins and their functional implications
+- **Disease Hierarchies**: Subclass relationships and disease manifestations
+- **Publication Evidence**: Supporting literature with full abstracts and metadata
+- **Multi-entity Networks**: Complex relationships between drugs, genes, diseases, and phenotypes
+
+The system automatically processes this data into structured formats suitable for LLM analysis, enabling comprehensive biomedical research and drug discovery workflows. 

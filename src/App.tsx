@@ -359,22 +359,31 @@ Provide references to the consulted abstracts wherever possible.`);
 
         <Container maxWidth="xl" sx={{ mt: 3, mb: 3 }}>
           <Grid container spacing={3}>
-            {/* Left Sidebar - Projects */}
-            <Grid item xs={12} md={3}>
-              <Paper sx={{ p: 2, height: 'fit-content' }}>
-                <ProjectManager
-                  projects={projects}
-                  currentProject={currentProject}
-                  onProjectSelect={handleProjectSelect}
-                  onProjectCreate={handleProjectCreate}
-                  onProjectDelete={handleProjectDelete}
-                  onProjectUpdate={handleProjectUpdate}
-                />
-              </Paper>
+            {/* Left Sidebar - Projects and History */}
+            <Grid item xs={12} md={4}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Paper sx={{ p: 2, height: 'fit-content' }}>
+                  <ProjectManager
+                    projects={projects}
+                    currentProject={currentProject}
+                    onProjectSelect={handleProjectSelect}
+                    onProjectCreate={handleProjectCreate}
+                    onProjectDelete={handleProjectDelete}
+                    onProjectUpdate={handleProjectUpdate}
+                  />
+                </Paper>
+                
+                <Paper sx={{ p: 2, height: 'fit-content', maxHeight: 600, overflow: 'auto' }}>
+                  <HistoryViewer
+                    interactions={currentProject?.interactions || []}
+                    onDeleteInteraction={handleDeleteInteraction}
+                  />
+                </Paper>
+              </Box>
             </Grid>
 
             {/* Main Content */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={8}>
               <Paper sx={{ p: 3 }}>
                 <Typography variant="h4" gutterBottom>
                   LLM Model Tester
@@ -480,16 +489,6 @@ Provide references to the consulted abstracts wherever possible.`);
                     console.log('File generated:', filePath);
                     // TODO: Add to project files
                   }}
-                />
-              </Paper>
-            </Grid>
-
-            {/* Right Sidebar - History */}
-            <Grid item xs={12} md={3}>
-              <Paper sx={{ p: 2, height: 'fit-content' }}>
-                <HistoryViewer
-                  interactions={currentProject?.interactions || []}
-                  onDeleteInteraction={handleDeleteInteraction}
                 />
               </Paper>
             </Grid>
