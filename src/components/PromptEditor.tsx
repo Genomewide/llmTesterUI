@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
 import SubjectNodeSelector from './SubjectNodeSelector';
-import { ProcessedData } from '../types';
+import { ProcessedData, ProcessingMethod } from '../types';
 
 interface PromptEditorProps {
   systemPrompt: string;
@@ -56,6 +56,7 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
 }) => {
   const [abstractSelection, setAbstractSelection] = useState<'none' | 'all' | 'recent'>('none');
   const [systemPromptExpanded, setSystemPromptExpanded] = useState<boolean>(false);
+  const [processingMethod, setProcessingMethod] = useState<ProcessingMethod>('biomedical');
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
@@ -121,6 +122,8 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
               abstractLimit={abstractLimit}
               placeholder="Select a subject node to populate input..."
               label="Data Selector"
+              processingMethod={processingMethod}
+              onProcessingMethodChange={setProcessingMethod}
             />
             
             {/* Abstract Options */}

@@ -98,6 +98,9 @@ export interface FileProcessingResult {
   error?: string;
 }
 
+// Processing method types
+export type ProcessingMethod = 'biomedical' | 'new-method';
+
 export interface FilePreviewResult {
   success: boolean;
   data?: any[];
@@ -164,6 +167,16 @@ export interface AbstractData {
   abstract: string;
 }
 
+export interface ClinicalTrialData {
+  trialId: string;
+  phase?: number;
+  maxResearchPhase?: number;
+  clinicalApprovalStatus?: string;
+  testedIntervention?: string;
+  boxedWarning?: string;
+  description: string;
+}
+
 export interface ProcessedData {
   results: ARSResult[];
   edges: Record<string, ARSEdge>;
@@ -189,6 +202,8 @@ export interface ProcessedData {
     publications_count: number;
     abstracts?: AbstractData[];
     abstract_count?: number;
+    clinical_trials?: ClinicalTrialData[];
+    clinical_trials_count?: number;
   }>;
   metadata: {
     pk: string;

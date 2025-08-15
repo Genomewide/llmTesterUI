@@ -5,9 +5,11 @@ import {
   Box,
   Typography,
   Chip,
-  CircularProgress
+  CircularProgress,
+  ToggleButtonGroup,
+  ToggleButton
 } from '@mui/material';
-import { ProcessedData } from '../types';
+import { ProcessedData, ProcessingMethod } from '../types';
 import { PubMedApiService } from '../services/pubmed-api';
 
 interface SubjectNodeSelectorProps {
@@ -18,6 +20,8 @@ interface SubjectNodeSelectorProps {
   abstractLimit?: number;
   placeholder?: string;
   label?: string;
+  processingMethod?: ProcessingMethod;
+  onProcessingMethodChange?: (method: ProcessingMethod) => void;
 }
 
 const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
@@ -27,9 +31,22 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
   includeAbstracts = false,
   abstractLimit,
   placeholder = "Type to search subject nodes...",
-  label = "Select Subject Node"
+  label = "Select Subject Node",
+  processingMethod = 'biomedical',
+  onProcessingMethodChange
 }) => {
   const [abstractFetching, setAbstractFetching] = useState(false);
+  
+  // Handle processing method change
+  const handleProcessingMethodChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newMethod: ProcessingMethod | null,
+  ) => {
+    if (newMethod !== null && onProcessingMethodChange) {
+      onProcessingMethodChange(newMethod);
+    }
+  };
+  
   // Extract unique subject nodes from data
   const uniqueSubjects = useMemo(() => {
     if (!data?.flattenedRows) return [];
@@ -44,6 +61,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     if (!selectedSubject || !data?.flattenedRows) return;
     
     console.log('🎯 Subject selected:', selectedSubject);
+    console.log('🔧 Processing method:', processingMethod);
     
     // Filter data for selected subject
     const filteredData = data.flattenedRows.filter(
@@ -52,28 +70,16 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     
     console.log('📊 Filtered data has', filteredData.length, 'edges');
     
-    // If abstracts are requested, fetch them for this specific subject
-    if (includeAbstracts) {
-      console.log('🔬 Abstract fetching enabled, limit:', abstractLimit || 'all');
-      setAbstractFetching(true);
-      try {
-        const enrichedFilteredData = await fetchAbstractsForSubject(filteredData);
-        const formattedData = formatDataForInput(enrichedFilteredData);
-        onSubjectSelect(formattedData, selectedSubject);
-      } catch (error) {
-        console.error('❌ Error fetching abstracts:', error);
-        // Fall back to data without abstracts
-        const formattedData = formatDataForInput(filteredData);
-        onSubjectSelect(formattedData, selectedSubject);
-      } finally {
-        setAbstractFetching(false);
-      }
+    let formattedData: string;
+    
+    // Choose processing method
+    if (processingMethod === 'biomedical') {
+      formattedData = await processBiomedicalData(filteredData, includeAbstracts, abstractLimit);
     } else {
-      console.log('📝 No abstracts requested, formatting data directly');
-      // Format data for user input without abstracts
-      const formattedData = formatDataForInput(filteredData);
-      onSubjectSelect(formattedData, selectedSubject);
+      formattedData = await processNewMethodData(filteredData, includeAbstracts, abstractLimit);
     }
+    
+    onSubjectSelect(formattedData, selectedSubject);
   };
 
   // Fetch abstracts for a specific subject's data
@@ -158,8 +164,327 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     return pubmedIds;
   };
 
-  // Format filtered data for user input
-  const formatDataForInput = (filteredData: any[]): string => {
+  // Process data using biomedical method (current logic)
+  const processBiomedicalData = async (
+    filteredData: any[], 
+    includeAbstracts: boolean, 
+    abstractLimit?: number
+  ): Promise<string> => {
+    if (includeAbstracts) {
+      console.log('🔬 Abstract fetching enabled, limit:', abstractLimit || 'all');
+      setAbstractFetching(true);
+      try {
+        const enrichedFilteredData = await fetchAbstractsForSubject(filteredData);
+        const formattedData = formatBiomedicalDataForInput(enrichedFilteredData);
+        return formattedData;
+      } catch (error) {
+        console.error('❌ Error fetching abstracts:', error);
+        // Fall back to data without abstracts
+        const formattedData = formatBiomedicalDataForInput(filteredData);
+        return formattedData;
+      } finally {
+        setAbstractFetching(false);
+      }
+    } else {
+      console.log('📝 No abstracts requested, formatting data directly');
+      return formatBiomedicalDataForInput(filteredData);
+    }
+  };
+
+  // Process data using new method
+  const processNewMethodData = async (
+    filteredData: any[], 
+    includeAbstracts: boolean, 
+    abstractLimit?: number
+  ): Promise<string> => {
+    console.log('🆕 Using new processing method');
+    
+    // TODO: Implement your new processing logic here
+    // This is where you'll add your different data formatting
+    
+    return formatNewMethodDataForInput(filteredData);
+  };
+
+  // Format data for new method - Path Analysis
+  const formatNewMethodDataForInput = (filteredData: any[]): string => {
+    console.log('🔍 formatNewMethodDataForInput called with', filteredData.length, 'rows');
+    
+    if (filteredData.length === 0) {
+      return 'No data available for the selected subject.';
+    }
+
+    const firstRow = filteredData[0];
+    const resultSubject = firstRow.result_subjectNode_name;
+    const resultObject = firstRow.result_objectNode_name;
+    
+    console.log(`🎯 Processing paths for: ${resultSubject} → ${resultObject}`);
+    
+    // Log sample data to see what we're working with
+    console.log('📋 Sample row data:');
+    console.log('  Subject:', firstRow.edge_subjectNode_name);
+    console.log('  Predicate:', firstRow.predicate);
+    console.log('  Object:', firstRow.edge_objectNode_name);
+    console.log('  Publications:', firstRow.publications);
+    console.log('  Publications count:', firstRow.publications_count);
+    console.log('  Clinical trials:', firstRow.clinical_trials);
+    console.log('  Clinical trials count:', firstRow.clinical_trials_count);
+    
+    // Check for clinical trials in all rows
+    const rowsWithTrials = filteredData.filter(row => row.clinical_trials && row.clinical_trials.length > 0);
+    console.log(`🏥 Found ${rowsWithTrials.length} rows with clinical trials out of ${filteredData.length} total rows`);
+    
+    if (rowsWithTrials.length > 0) {
+      console.log('📋 Rows with clinical trials:');
+      rowsWithTrials.slice(0, 3).forEach((row, index) => {
+        console.log(`  Row ${index + 1}: ${row.edge_subjectNode_name} → ${row.predicate} → ${row.edge_objectNode_name}`);
+        console.log(`    Clinical trials: ${row.clinical_trials.map((t: any) => t.description).join(', ')}`);
+      });
+    }
+    
+    let output = '';
+    output += 'PATH ANALYSIS FORMAT\n';
+    output += '===================\n\n';
+    
+    // Header with the main claim
+    output += `Main Claim: ${resultSubject} treats ${resultObject}\n\n`;
+    
+    // Find all paths between result subject and result object
+    const paths = findPathsBetweenNodes(filteredData, resultSubject, resultObject);
+    
+    output += `Found ${paths.length} distinct paths between ${resultSubject} and ${resultObject}:\n\n`;
+    
+          // Display each path
+      paths.forEach((path, pathIndex) => {
+        output += `Path ${pathIndex + 1}:\n`;
+        output += `${path.map((step, stepIndex) => {
+          const stepStr = `${stepIndex + 1}. ${step.from} → ${step.predicate} → ${step.to}`;
+          const sourceStr = step.source ? ` [Source: ${step.source}]` : '';
+          const pubStr = step.publications ? ` (${step.publications})` : '';
+          const trialStr = step.clinical_trials && step.clinical_trials.length > 0 
+            ? ` [Clinical Trials: ${step.clinical_trials.map((t: any) => t.description).join(', ')}]` 
+            : '';
+          return `${stepStr}${sourceStr}${pubStr}${trialStr}`;
+        }).join('\n')}\n\n`;
+      });
+    
+    // Node participation analysis (bottleneck identification)
+    const nodeParticipation = analyzeNodeParticipation(paths);
+    
+    // Summary statistics
+    output += `Path Analysis Summary:\n`;
+    output += `- Total edges in paths: ${paths.reduce((sum, path) => sum + path.length, 0)}\n`;
+    output += `- Unique nodes involved: ${getUniqueNodesInPaths(paths).length}\n`;
+    output += `- Path lengths: ${paths.map(p => p.length).join(', ')}\n\n`;
+    
+    // Node participation/bottleneck analysis
+    output += `Node Participation Analysis (Bottleneck Identification):\n`;
+    output += `===================================================\n`;
+    
+    // Sort nodes by participation count (highest first)
+    const sortedNodes = Array.from(nodeParticipation.entries())
+      .sort((a, b) => b[1].count - a[1].count);
+    
+    sortedNodes.forEach(([nodeName, data]) => {
+      const percentage = ((data.count / paths.length) * 100).toFixed(1);
+      output += `- ${nodeName}: appears in ${data.count}/${paths.length} paths (${percentage}%)\n`;
+      
+      // Show which paths this node appears in
+      if (data.paths.length > 0) {
+        output += `  Paths: ${data.paths.map(p => p + 1).join(', ')}\n`;
+      }
+      
+      // Show roles (start, end, intermediate)
+      const roles = [];
+      if (data.roles.includes('start')) roles.push('start node');
+      if (data.roles.includes('end')) roles.push('end node');
+      if (data.roles.includes('intermediate')) roles.push('intermediate');
+      output += `  Roles: ${roles.join(', ')}\n`;
+    });
+    
+    // Identify potential bottlenecks
+    const bottlenecks = sortedNodes.filter(([nodeName, data]) => {
+      const percentage = (data.count / paths.length) * 100;
+      return percentage > 50; // Node appears in more than 50% of paths
+    });
+    
+    if (bottlenecks.length > 0) {
+      output += `\nPotential Bottlenecks (nodes in >50% of paths):\n`;
+      output += `=============================================\n`;
+      bottlenecks.forEach(([nodeName, data]) => {
+        const percentage = ((data.count / paths.length) * 100).toFixed(1);
+        output += `- ${nodeName} (${percentage}% participation)\n`;
+      });
+    }
+    
+    return output;
+  };
+
+  // Helper function to find all paths between two nodes (max 4 hops)
+  const findPathsBetweenNodes = (filteredData: any[], startNode: string, endNode: string): any[][] => {
+    console.log(`🔍 findPathsBetweenNodes called: ${startNode} → ${endNode}`);
+    console.log(`  Input data: ${filteredData.length} rows`);
+    
+    // Create a graph representation
+    const graph = new Map<string, Array<{to: string, predicate: string, source: string, publications: string, clinicalTrials: any[]}>>();
+    
+    // Build the graph from filtered data
+    let edgesWithTrials = 0;
+    filteredData.forEach((row, index) => {
+      const from = row.edge_subjectNode_name;
+      const to = row.edge_objectNode_name;
+      const predicate = row.predicate;
+      const source = row.primary_source;
+      const publications = row.publications;
+      const clinicalTrials = row.clinical_trials || [];
+      
+      if (clinicalTrials.length > 0) {
+        edgesWithTrials++;
+        console.log(`  🏥 Edge ${index}: ${from} → ${to} has ${clinicalTrials.length} clinical trials`);
+        clinicalTrials.forEach((trial: any) => {
+          console.log(`    Trial: ${trial.description}`);
+        });
+      }
+      
+      if (!graph.has(from)) {
+        graph.set(from, []);
+      }
+      graph.get(from)!.push({
+        to,
+        predicate,
+        source,
+        publications,
+        clinicalTrials
+      });
+    });
+    
+    console.log(`  📊 Built graph with ${graph.size} nodes, ${edgesWithTrials} edges have clinical trials`);
+    
+    const paths: any[][] = [];
+    
+    // First, find direct connections (1 hop)
+    const directConnections = graph.get(startNode)?.filter(neighbor => neighbor.to === endNode) || [];
+    directConnections.forEach(connection => {
+      paths.push([{
+        from: startNode,
+        to: endNode,
+        predicate: connection.predicate,
+        source: connection.source,
+        publications: connection.publications,
+        clinical_trials: connection.clinicalTrials
+      }]);
+    });
+    
+    // Then find indirect paths (2-4 hops) using BFS with path tracking
+    const queue: Array<{node: string, path: any[], visited: Set<string>, hops: number}> = [
+      {node: startNode, path: [], visited: new Set([startNode]), hops: 0}
+    ];
+    
+    while (queue.length > 0) {
+      const {node, path, visited, hops} = queue.shift()!;
+      
+      // Stop if we've reached 4 hops
+      if (hops >= 4) {
+        continue;
+      }
+      
+      // If we reached the end node and it's not a direct connection, save this path
+      if (node === endNode && path.length > 0) {
+        // Check if this path is already included as a direct connection
+        const isDirectPath = path.length === 1 && path[0].from === startNode && path[0].to === endNode;
+        if (!isDirectPath) {
+          paths.push([...path]);
+        }
+        continue;
+      }
+      
+      // Get all neighbors
+      const neighbors = graph.get(node) || [];
+      
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor.to)) {
+          const newPath = [...path, {
+            from: node,
+            to: neighbor.to,
+            predicate: neighbor.predicate,
+            source: neighbor.source,
+            publications: neighbor.publications,
+            clinical_trials: neighbor.clinicalTrials
+          }];
+          
+          const newVisited = new Set(visited);
+          newVisited.add(neighbor.to);
+          
+          queue.push({
+            node: neighbor.to,
+            path: newPath,
+            visited: newVisited,
+            hops: hops + 1
+          });
+        }
+      }
+    }
+    
+    return paths;
+  };
+
+  // Helper function to get unique nodes in all paths
+  const getUniqueNodesInPaths = (paths: any[][]): string[] => {
+    const uniqueNodes = new Set<string>();
+    
+    paths.forEach(path => {
+      path.forEach(step => {
+        uniqueNodes.add(step.from);
+        uniqueNodes.add(step.to);
+      });
+    });
+    
+    return Array.from(uniqueNodes);
+  };
+
+  // Helper function to analyze node participation in paths
+  const analyzeNodeParticipation = (paths: any[][]): Map<string, {count: number, paths: number[], roles: string[]}> => {
+    const nodeParticipation = new Map<string, {count: number, paths: number[], roles: string[]}>();
+    
+    paths.forEach((path, pathIndex) => {
+      const pathNodes = new Set<string>();
+      
+      path.forEach(step => {
+        pathNodes.add(step.from);
+        pathNodes.add(step.to);
+      });
+      
+      // Count participation for each node in this path
+      pathNodes.forEach(nodeName => {
+        if (!nodeParticipation.has(nodeName)) {
+          nodeParticipation.set(nodeName, {
+            count: 0,
+            paths: [],
+            roles: []
+          });
+        }
+        
+        const nodeData = nodeParticipation.get(nodeName)!;
+        nodeData.count += 1;
+        nodeData.paths.push(pathIndex);
+        
+        // Determine role in this path
+        if (path.length > 0) {
+          if (path[0].from === nodeName) {
+            if (!nodeData.roles.includes('start')) nodeData.roles.push('start');
+          } else if (path[path.length - 1].to === nodeName) {
+            if (!nodeData.roles.includes('end')) nodeData.roles.push('end');
+          } else {
+            if (!nodeData.roles.includes('intermediate')) nodeData.roles.push('intermediate');
+          }
+        }
+      });
+    });
+    
+    return nodeParticipation;
+  };
+
+  // Format data using biomedical method (renamed from formatDataForInput)
+  const formatBiomedicalDataForInput = (filteredData: any[]): string => {
     if (filteredData.length === 0) {
       return 'No data available for the selected subject.';
     }
@@ -380,6 +705,27 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
 
   return (
     <Box sx={{ mb: 2 }}>
+      {/* Processing Method Toggle */}
+      <Box sx={{ mb: 2 }}>
+        <Typography variant="subtitle2" gutterBottom>
+          Processing Method
+        </Typography>
+        <ToggleButtonGroup
+          value={processingMethod}
+          exclusive
+          onChange={handleProcessingMethodChange}
+          size="small"
+          disabled={disabled}
+        >
+          <ToggleButton value="biomedical">
+            Biomedical
+          </ToggleButton>
+          <ToggleButton value="new-method">
+            New Method
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+
       <Typography variant="subtitle2" gutterBottom>
         {label}
       </Typography>

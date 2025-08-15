@@ -423,9 +423,11 @@ export class DataProcessor {
       const subjectNode = this.nodes[subject];
       const objectNode = this.nodes[object];
       
-      // Extract publications from edge attributes (following Python pattern)
+      // Extract publications and clinical trials from edge attributes (following Python pattern)
       let publications: string[] = [];
       let publications_count = 0;
+      let clinicalTrials: any[] = [];
+      let clinicalTrials_count = 0;
       
       if (edgeData.attributes && Array.isArray(edgeData.attributes)) {
         const publicationAttribute = edgeData.attributes.find(
@@ -435,6 +437,10 @@ export class DataProcessor {
           publications = Array.isArray(publicationAttribute.value) ? publicationAttribute.value : [publicationAttribute.value];
           publications_count = publications.length;
         }
+        
+        // Extract clinical trials
+        clinicalTrials = this.extractClinicalTrials(edgeData.attributes);
+        clinicalTrials_count = clinicalTrials.length;
       }
       
       const supportEdgeData = {
@@ -448,6 +454,8 @@ export class DataProcessor {
         primary_source: primary_source,
         publications: publications.length > 0 ? publications.join(';') : 'N/A',
         publications_count: publications_count,
+        clinical_trials: clinicalTrials,
+        clinical_trials_count: clinicalTrials_count,
         support_graph_id: graphId,
         edge_type: 'support'
       };
@@ -465,6 +473,12 @@ export class DataProcessor {
    * Extract edge data - simplified to only essential fields
    */
   private extractEdgeData(edge: ARSEdge, edgeId: string): any {
+    console.log(`🔍 extractEdgeData called for edge: ${edgeId}`);
+    console.log(`  Subject: ${edge.subject} (${this.nodes[edge.subject]?.name || 'Unknown'})`);
+    console.log(`  Predicate: ${edge.predicate}`);
+    console.log(`  Object: ${edge.object} (${this.nodes[edge.object]?.name || 'Unknown'})`);
+    console.log(`  Attributes count: ${edge.attributes?.length || 0}`);
+    
     // Extract basic edge data
     const subjectNode = this.nodes[edge.subject];
     const objectNode = this.nodes[edge.object];
@@ -479,15 +493,24 @@ export class DataProcessor {
       }
     });
     
-    // Extract publications from attributes
+    // Extract publications and clinical trials from attributes
     const attributes = edge.attributes || [];
     let publications: string[] = [];
+    let clinicalTrials: any[] = [];
+    
+    console.log(`  📋 Processing ${attributes.length} attributes...`);
     
     attributes.forEach((attribute: any) => {
       if (attribute.attribute_type_id === 'biolink:publications') {
         publications = Array.isArray(attribute.value) ? attribute.value : [attribute.value];
+        console.log(`  📄 Found publications: ${publications.join(', ')}`);
       }
     });
+    
+    // Extract clinical trials
+    console.log(`  🏥 Extracting clinical trials...`);
+    clinicalTrials = this.extractClinicalTrials(attributes);
+    console.log(`  ✅ Found ${clinicalTrials.length} clinical trials for edge ${edgeId}`);
     
     // Generate phrase
     const phrase = this.generatePhrase({
@@ -496,7 +519,7 @@ export class DataProcessor {
       predicate: edge.predicate
     });
 
-    return {
+    const result = {
       edge_id: edgeId,
       edge_object: edge.object,
       edge_subject: edge.subject,
@@ -507,8 +530,20 @@ export class DataProcessor {
       primary_source: primary_source || 'N/A',
       publications: publications.length > 0 ? publications.join(';') : 'N/A',
       publications_count: publications.length,
+      clinical_trials: clinicalTrials,
+      clinical_trials_count: clinicalTrials.length,
       edge_type: 'primary'
     };
+    
+    console.log(`  📊 Edge ${edgeId} result:`, {
+      subject: result.edge_subjectNode_name,
+      predicate: result.predicate,
+      object: result.edge_objectNode_name,
+      publications_count: result.publications_count,
+      clinical_trials_count: result.clinical_trials_count
+    });
+    
+    return result;
   }
 
   /**
@@ -600,5 +635,82 @@ export class DataProcessor {
         return null;
       })
       .filter(Boolean) as string[];
+  }
+
+  /**
+   * Extract clinical trial information from edge attributes
+   */
+  private extractClinicalTrials(attributes: any[]): any[] {
+    const clinicalTrials: any[] = [];
+    
+    console.log('🔍 extractClinicalTrials called with', attributes.length, 'attributes');
+    
+    attributes.forEach((attribute: any, index: number) => {
+      console.log(`  Attribute ${index}: ${attribute.attribute_type_id} = ${JSON.stringify(attribute.value)}`);
+      
+      if (attribute.attribute_type_id === 'biolink:supporting_study') {
+        console.log(`  🏥 Found supporting_study: ${attribute.value}`);
+        const trialId = attribute.value;
+        
+        // Find related clinical trial attributes
+        let phase: number | undefined;
+        let maxResearchPhase: number | undefined;
+        let clinicalApprovalStatus: string | undefined;
+        let testedIntervention: string | undefined;
+        let boxedWarning: string | undefined;
+        
+        attributes.forEach((relatedAttr: any) => {
+          if (relatedAttr.attribute_type_id === 'clinical_trial_phase') {
+            phase = relatedAttr.value;
+            console.log(`    Found phase: ${phase}`);
+          } else if (relatedAttr.attribute_type_id === 'biolink:max_research_phase') {
+            maxResearchPhase = relatedAttr.value;
+            console.log(`    Found max_research_phase: ${maxResearchPhase}`);
+          } else if (relatedAttr.attribute_type_id === 'biolink:clinical_approval_status') {
+            clinicalApprovalStatus = relatedAttr.value;
+            console.log(`    Found clinical_approval_status: ${clinicalApprovalStatus}`);
+          } else if (relatedAttr.attribute_type_id === 'clinical_trial_tested_intervention') {
+            testedIntervention = relatedAttr.value;
+            console.log(`    Found tested_intervention: ${testedIntervention}`);
+          } else if (relatedAttr.attribute_type_id === 'intervention_boxed_warning') {
+            boxedWarning = relatedAttr.value;
+            console.log(`    Found boxed_warning: ${boxedWarning}`);
+          }
+        });
+        
+        // Generate description
+        let description = `Clinical trial ${trialId}`;
+        if (phase !== undefined) {
+          description += ` (Phase ${phase})`;
+        } else if (maxResearchPhase !== undefined) {
+          description += ` (Max Phase ${maxResearchPhase})`;
+        }
+        if (clinicalApprovalStatus) {
+          description += ` - ${clinicalApprovalStatus.replace('biolink:', '')}`;
+        }
+        if (testedIntervention === 'yes') {
+          description += ` - Tested intervention`;
+        }
+        if (boxedWarning) {
+          description += ` - Boxed warning: ${boxedWarning}`;
+        }
+        
+        const trialData = {
+          trialId,
+          phase: phase || maxResearchPhase,
+          maxResearchPhase,
+          clinicalApprovalStatus,
+          testedIntervention,
+          boxedWarning,
+          description
+        };
+        
+        clinicalTrials.push(trialData);
+        console.log(`  ✅ Added clinical trial: ${description}`);
+      }
+    });
+    
+    console.log(`  📊 extractClinicalTrials returning ${clinicalTrials.length} trials`);
+    return clinicalTrials;
   }
 } 
