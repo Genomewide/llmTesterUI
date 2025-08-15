@@ -11,8 +11,11 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
-  Alert
+  Alert,
+  IconButton,
+  Collapse
 } from '@mui/material';
+import { ExpandMore as ExpandMoreIcon, ExpandLess as ExpandLessIcon } from '@mui/icons-material';
 import SubjectNodeSelector from './SubjectNodeSelector';
 import { ProcessedData } from '../types';
 
@@ -50,22 +53,48 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
   onAbstractOptionsChange
 }) => {
   const [abstractSelection, setAbstractSelection] = useState<'none' | 'all' | 'recent'>('none');
+  const [systemPromptExpanded, setSystemPromptExpanded] = useState<boolean>(false);
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
-        <Typography variant="h6" gutterBottom>
-          System Prompt
-        </Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          value={systemPrompt}
-          onChange={(e) => onSystemPromptChange(e.target.value)}
-          placeholder="Enter the system prompt that defines the AI's behavior..."
-          disabled={loading}
-          variant="outlined"
-        />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+          <Typography variant="h6">
+            System Prompt
+          </Typography>
+          <IconButton
+            size="small"
+            onClick={() => setSystemPromptExpanded(!systemPromptExpanded)}
+            sx={{ 
+              transform: systemPromptExpanded ? 'rotate(180deg)' : 'rotate(0deg)', 
+              transition: 'transform 0.2s'
+            }}
+          >
+            <ExpandMoreIcon />
+          </IconButton>
+        </Box>
+        <Box sx={{ position: 'relative' }}>
+          <textarea
+            value={systemPrompt}
+            onChange={(e) => onSystemPromptChange(e.target.value)}
+            placeholder="Enter the system prompt that defines the AI's behavior..."
+            disabled={loading}
+            rows={systemPromptExpanded ? 16 : 8}
+            style={{
+              width: '100%',
+              minHeight: '120px',
+              padding: '16.5px 14px',
+              border: '1px solid rgba(0, 0, 0, 0.23)',
+              borderRadius: '4px',
+              fontFamily: 'inherit',
+              fontSize: '1rem',
+              resize: 'both',
+              overflow: 'auto',
+              transition: 'all 0.3s ease-in-out',
+              backgroundColor: loading ? 'rgba(0, 0, 0, 0.12)' : 'transparent',
+              color: loading ? 'rgba(0, 0, 0, 0.38)' : 'inherit'
+            }}
+          />
+        </Box>
       </Box>
 
       <Box>
