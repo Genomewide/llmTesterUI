@@ -19,6 +19,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ARS API functionality
   fetchArsData: (pk, environment) => ipcRenderer.invoke('fetch-ars-data', pk, environment),
   
+  // PubMed API functionality
+  fetchPubMedMetadata: (pubmedIds) => ipcRenderer.invoke('fetch-pubmed-metadata', pubmedIds),
+  fetchPubMedAbstracts: (pubmedIds) => ipcRenderer.invoke('fetch-pubmed-abstracts', pubmedIds),
+  
   // File export functionality
   saveCSVFile: (filePath, content) => ipcRenderer.invoke('save-csv-file', filePath, content),
   saveJSONFile: (filePath, content) => ipcRenderer.invoke('save-json-file', filePath, content),

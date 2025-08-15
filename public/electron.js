@@ -9,6 +9,10 @@ const yaml = require('js-yaml');
 const xml2js = require('xml2js');
 const axios = require('axios');
 
+// PubMed API configuration
+const PUBMED_BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/';
+const RATE_LIMIT_DELAY = 350; // 350ms between requests (allows max 3 requests/second)
+
 let mainWindow;
 
 function createWindow() {
@@ -26,9 +30,8 @@ function createWindow() {
   const startUrl = process.env.ELECTRON_START_URL || 'http://localhost:3000';
   mainWindow.loadURL(startUrl);
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
+  // Always open DevTools for debugging (remove this line in production)
+  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -445,4 +448,198 @@ ipcMain.handle('save-json-file', async (event, filePath, content) => {
       error: error.message
     };
   }
-}); 
+});
+
+// PubMed API handlers
+ipcMain.handle('fetch-pubmed-metadata', async (event, pubmedIds) => {
+  try {
+    console.log('🔬 Fetching PubMed metadata for', pubmedIds.length, 'IDs:', pubmedIds);
+    
+    const results = [];
+    
+    // Process in batches of 10 to respect rate limits
+    for (let i = 0; i < pubmedIds.length; i += 10) {
+      const batch = pubmedIds.slice(i, i + 10);
+      console.log('🌐 API Call: Fetching metadata for batch:', batch);
+      
+      const idList = batch.join(',');
+      const params = new URLSearchParams({
+        db: 'pubmed',
+        id: idList,
+        retmode: 'xml',
+        rettype: 'abstract',
+        tool: 'llmTesterUI',
+        email: 'user@example.com'
+      });
+
+      const response = await axios.get(`${PUBMED_BASE_URL}esummary.fcgi?${params}`);
+      
+      if (response.status !== 200) {
+        if (response.status === 429) {
+          throw new Error('PubMed API rate limit exceeded. Please wait and try again.');
+        }
+        throw new Error(`PubMed API error: ${response.status}`);
+      }
+
+      const batchResults = parseMetadataFromXML(response.data, batch);
+      results.push(...batchResults);
+      
+      console.log('📊 Metadata batch completed, parsed', batchResults.length, 'results');
+      
+      // Rate limiting
+      if (i + 10 < pubmedIds.length) {
+        console.log('⏳ Rate limiting delay...');
+        await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_DELAY));
+      }
+    }
+    
+    console.log('✅ PubMed metadata fetching completed, total results:', results.length);
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('❌ Error fetching PubMed metadata:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('fetch-pubmed-abstracts', async (event, pubmedIds) => {
+  try {
+    console.log('📄 Fetching PubMed abstracts for', pubmedIds.length, 'IDs:', pubmedIds);
+    
+    const results = [];
+    
+    // Process in batches of 10 to respect rate limits
+    for (let i = 0; i < pubmedIds.length; i += 10) {
+      const batch = pubmedIds.slice(i, i + 10);
+      console.log('🌐 API Call: Fetching abstracts for batch:', batch);
+      
+      const idList = batch.join(',');
+      const params = new URLSearchParams({
+        db: 'pubmed',
+        id: idList,
+        retmode: 'xml',
+        rettype: 'abstract',
+        tool: 'llmTesterUI',
+        email: 'user@example.com'
+      });
+
+      const response = await axios.get(`${PUBMED_BASE_URL}efetch.fcgi?${params}`);
+      
+      if (response.status !== 200) {
+        if (response.status === 429) {
+          throw new Error('PubMed API rate limit exceeded. Please wait and try again.');
+        }
+        throw new Error(`PubMed API error: ${response.status}`);
+      }
+
+      const batchResults = parseAbstractsFromXML(response.data, batch);
+      results.push(...batchResults);
+      
+      console.log('📊 Abstracts batch completed, parsed', batchResults.length, 'results');
+      
+      // Rate limiting
+      if (i + 10 < pubmedIds.length) {
+        console.log('⏳ Rate limiting delay...');
+        await new Promise(resolve => setTimeout(resolve, RATE_LIMIT_DELAY));
+      }
+    }
+    
+    console.log('✅ PubMed abstracts fetching completed, total results:', results.length);
+    return { success: true, data: results };
+  } catch (error) {
+    console.error('❌ Error fetching PubMed abstracts:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+// Helper functions for parsing PubMed XML responses
+function parseMetadataFromXML(xmlData, pubmedIds) {
+  const results = [];
+  
+  // Simple XML parsing (in production, use a proper XML parser)
+  const docSumRegex = /<DocSum>([\s\S]*?)<\/DocSum>/g;
+  let match;
+  
+  while ((match = docSumRegex.exec(xmlData)) !== null) {
+    const docSum = match[1];
+    
+    // Extract ID
+    const idMatch = docSum.match(/<Id>(\d+)<\/Id>/);
+    if (!idMatch) continue;
+    
+    const pubmedId = idMatch[1];
+    
+    // Extract title
+    const titleMatch = docSum.match(/<Item Name="Title" Type="String">([^<]+)<\/Item>/);
+    const title = titleMatch ? titleMatch[1] : 'Unknown Title';
+    
+    // Extract journal
+    const journalMatch = docSum.match(/<Item Name="FullJournalName" Type="String">([^<]+)<\/Item>/);
+    const journal = journalMatch ? journalMatch[1] : 'Unknown Journal';
+    
+    // Extract publication date
+    const dateMatch = docSum.match(/<Item Name="PubDate" Type="String">([^<]+)<\/Item>/);
+    const publicationDate = dateMatch ? dateMatch[1] : new Date().toISOString();
+    
+    results.push({
+      pubmedId,
+      title,
+      journal,
+      publicationDate
+    });
+  }
+  
+  return results;
+}
+
+function parseAbstractsFromXML(xmlData, pubmedIds) {
+  const results = [];
+  
+  // Simple XML parsing (in production, use a proper XML parser)
+  const pubmedArticleRegex = /<PubmedArticle>([\s\S]*?)<\/PubmedArticle>/g;
+  let match;
+  
+  while ((match = pubmedArticleRegex.exec(xmlData)) !== null) {
+    const article = match[1];
+    
+    // Extract PMID
+    const pmidMatch = article.match(/<PMID[^>]*>(\d+)<\/PMID>/);
+    if (!pmidMatch) continue;
+    
+    const pubmedId = pmidMatch[1];
+    
+    // Extract title
+    const titleMatch = article.match(/<ArticleTitle[^>]*>([^<]+)<\/ArticleTitle>/);
+    const title = titleMatch ? titleMatch[1] : 'Unknown Title';
+    
+    // Extract journal
+    const journalMatch = article.match(/<Journal>[\s\S]*?<Title>([^<]+)<\/Title>/);
+    const journal = journalMatch ? journalMatch[1] : 'Unknown Journal';
+    
+    // Extract publication date
+    const yearMatch = article.match(/<PubDate>[\s\S]*?<Year>(\d+)<\/Year>/);
+    const monthMatch = article.match(/<PubDate>[\s\S]*?<Month>(\d+)<\/Month>/);
+    const dayMatch = article.match(/<PubDate>[\s\S]*?<Day>(\d+)<\/Day>/);
+    
+    let publicationDate = new Date().toISOString();
+    if (yearMatch) {
+      const year = yearMatch[1];
+      const month = monthMatch ? monthMatch[1] : '01';
+      const day = dayMatch ? dayMatch[1] : '01';
+      publicationDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000Z`;
+    }
+    
+    // Extract abstract
+    const abstractMatch = article.match(/<AbstractText[^>]*>([^<]+)<\/AbstractText>/);
+    const abstract = abstractMatch ? abstractMatch[1] : 'No abstract available';
+    
+    results.push({
+      pubmedId,
+      title,
+      journal,
+      publicationDate,
+      abstract
+    });
+  }
+  
+  return results;
+}

@@ -43,20 +43,25 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
   const handleSubjectSelect = async (selectedSubject: string | null) => {
     if (!selectedSubject || !data?.flattenedRows) return;
     
+    console.log('🎯 Subject selected:', selectedSubject);
+    
     // Filter data for selected subject
     const filteredData = data.flattenedRows.filter(
       row => row.result_subjectNode_name === selectedSubject
     );
     
+    console.log('📊 Filtered data has', filteredData.length, 'edges');
+    
     // If abstracts are requested, fetch them for this specific subject
     if (includeAbstracts) {
+      console.log('🔬 Abstract fetching enabled, limit:', abstractLimit || 'all');
       setAbstractFetching(true);
       try {
         const enrichedFilteredData = await fetchAbstractsForSubject(filteredData);
         const formattedData = formatDataForInput(enrichedFilteredData);
         onSubjectSelect(formattedData);
       } catch (error) {
-        console.error('Error fetching abstracts:', error);
+        console.error('❌ Error fetching abstracts:', error);
         // Fall back to data without abstracts
         const formattedData = formatDataForInput(filteredData);
         onSubjectSelect(formattedData);
@@ -64,6 +69,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
         setAbstractFetching(false);
       }
     } else {
+      console.log('📝 No abstracts requested, formatting data directly');
       // Format data for user input without abstracts
       const formattedData = formatDataForInput(filteredData);
       onSubjectSelect(formattedData);
@@ -75,25 +81,37 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     const pubmedApi = new PubMedApiService();
     const enrichedData = [...filteredData];
     
+    console.log('🔍 Starting abstract fetching for subject with', filteredData.length, 'edges');
+    
     for (const row of enrichedData) {
       if (row.publications && row.publications !== 'N/A') {
         const pubmedIds = extractPubMedIds(row.publications);
+        console.log('📄 Edge:', row.predicate, '| Publications:', row.publications, '| PubMed IDs:', pubmedIds);
+        
         if (pubmedIds.length > 0) {
           try {
+            console.log('🔄 Fetching abstracts for edge:', row.predicate, '| Limit:', abstractLimit || 'all');
+            // Apply limit per edge, not across all edges
             const abstracts = abstractLimit 
               ? await pubmedApi.fetchTopRecentAbstracts(pubmedIds, abstractLimit)
               : await pubmedApi.fetchAbstracts(pubmedIds);
             row.abstracts = abstracts;
             row.abstract_count = abstracts.length;
+            console.log('✅ Edge completed:', row.predicate, '| Abstracts fetched:', abstracts.length);
           } catch (error) {
-            console.error('Error fetching abstracts for row:', error);
+            console.error('❌ Error fetching abstracts for row:', error);
             row.abstracts = [];
             row.abstract_count = 0;
           }
+        } else {
+          console.log('⚠️ No PubMed IDs found for edge:', row.predicate);
         }
+      } else {
+        console.log('⚠️ No publications for edge:', row.predicate);
       }
     }
     
+    console.log('🎉 Abstract fetching completed for subject');
     return enrichedData;
   };
 
@@ -296,9 +314,17 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       </Typography>
       
       {abstractFetching && (
-        <Typography variant="caption" color="primary" sx={{ mt: 1, display: 'block' }}>
-          Fetching abstracts for selected subject... This may take a moment due to PubMed API rate limits.
-        </Typography>
+        <Box sx={{ mt: 1, p: 1, bgcolor: 'info.light', borderRadius: 1 }}>
+          <Typography variant="caption" color="primary" sx={{ display: 'block', fontWeight: 'bold' }}>
+            🔄 Fetching abstracts for selected subject...
+          </Typography>
+          <Typography variant="caption" color="primary" sx={{ display: 'block' }}>
+            This may take a moment due to PubMed API rate limits.
+          </Typography>
+          <Typography variant="caption" color="primary" sx={{ display: 'block', fontStyle: 'italic' }}>
+            Check the console (Ctrl+Shift+I) for detailed progress.
+          </Typography>
+        </Box>
       )}
     </Box>
   );

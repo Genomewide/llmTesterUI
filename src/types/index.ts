@@ -149,6 +149,13 @@ export interface ARSResult {
   [key: string]: any;
 }
 
+export interface BasicMetadata {
+  pubmedId: string;
+  title: string;
+  journal: string;
+  publicationDate: string;
+}
+
 export interface AbstractData {
   pubmedId: string;
   title: string;
@@ -210,6 +217,8 @@ declare global {
         environment?: string;
         timestamp?: string;
       }>;
+      fetchPubMedMetadata: (pubmedIds: string[]) => Promise<{ success: boolean; data?: any; error?: string }>;
+      fetchPubMedAbstracts: (pubmedIds: string[]) => Promise<{ success: boolean; data?: any; error?: string }>;
       saveCSVFile: (filePath: string, content: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
       saveJSONFile: (filePath: string, content: any) => Promise<{ success: boolean; filePath?: string; error?: string }>;
       getAppVersion: () => string;
