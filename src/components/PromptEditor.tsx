@@ -56,7 +56,7 @@ const PromptEditor: React.FC<PromptEditorProps> = ({
 }) => {
   const [abstractSelection, setAbstractSelection] = useState<'none' | 'all' | 'recent'>('none');
   const [systemPromptExpanded, setSystemPromptExpanded] = useState<boolean>(false);
-  const [processingMethod, setProcessingMethod] = useState<ProcessingMethod>('biomedical');
+  const [processingMethod, setProcessingMethod] = useState<ProcessingMethod>('new-method');
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>

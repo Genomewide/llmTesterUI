@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -29,6 +29,11 @@ const DataFetcher: React.FC<DataFetcherProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [processedData, setProcessedData] = useState<any | null>(null);
+
+  // Auto-load data when component mounts
+  useEffect(() => {
+    handleFetchData();
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleFetchData = async () => {
     if (!pk.trim()) {

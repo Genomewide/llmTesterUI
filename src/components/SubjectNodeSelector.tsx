@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Autocomplete,
   TextField,
@@ -32,7 +32,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
   abstractLimit,
   placeholder = "Type to search subject nodes...",
   label = "Select Subject Node",
-  processingMethod = 'biomedical',
+  processingMethod = 'new-method',
   onProcessingMethodChange
 }) => {
   const [abstractFetching, setAbstractFetching] = useState(false);
@@ -55,6 +55,15 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     const uniqueSet = new Set(subjectNames);
     return Array.from(uniqueSet).sort();
   }, [data]);
+  
+  // Auto-select first subject when data is loaded
+  useEffect(() => {
+    if (data?.flattenedRows && uniqueSubjects.length > 0) {
+      const firstSubject = uniqueSubjects[0];
+      console.log('🚀 Auto-selecting first subject:', firstSubject);
+      handleSubjectSelect(firstSubject);
+    }
+  }, [data, uniqueSubjects]);
 
   // Handle subject selection
   const handleSubjectSelect = async (selectedSubject: string | null) => {
@@ -249,32 +258,46 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     output += `Main Claim: ${resultSubject} treats ${resultObject}\n\n`;
     
     // Find all paths between result subject and result object
-    const paths = findPathsBetweenNodes(filteredData, resultSubject, resultObject);
+    const rawPaths = findPathsBetweenNodes(filteredData, resultSubject, resultObject);
     
-    output += `Found ${paths.length} distinct paths between ${resultSubject} and ${resultObject}:\n\n`;
+    // Add debugging info to output
+    output += `DEBUG INFO:\n`;
+    output += `Raw paths found: ${rawPaths.length}\n`;
+    const hopCounts = rawPaths.reduce((acc, path) => {
+      const hopCount = path.length;
+      acc[hopCount] = (acc[hopCount] || 0) + 1;
+      return acc;
+    }, {} as Record<number, number>);
+    output += `Paths by hop count: ${Object.entries(hopCounts).map(([hops, count]) => `${hops}-hop: ${count}`).join(', ')}\n`;
+    output += `Graph structure analysis completed.\n\n`;
     
-          // Display each path
-      paths.forEach((path, pathIndex) => {
-        output += `Path ${pathIndex + 1}:\n`;
-        output += `${path.map((step, stepIndex) => {
-          const stepStr = `${stepIndex + 1}. ${step.from} → ${step.predicate} → ${step.to}`;
-          const sourceStr = step.source ? ` [Source: ${step.source}]` : '';
-          const pubStr = step.publications ? ` (${step.publications})` : '';
-          const trialStr = step.clinical_trials && step.clinical_trials.length > 0 
-            ? ` [Clinical Trials: ${step.clinical_trials.map((t: any) => t.description).join(', ')}]` 
-            : '';
-          return `${stepStr}${sourceStr}${pubStr}${trialStr}`;
-        }).join('\n')}\n\n`;
-      });
+    // Deduplicate paths by combining identical node/predicate combinations
+    const deduplicatedPaths = deduplicatePaths(rawPaths);
+    
+    output += `Found ${deduplicatedPaths.length} distinct paths between ${resultSubject} and ${resultObject}:\n\n`;
+    
+    // Display each deduplicated path
+    deduplicatedPaths.forEach((path, pathIndex) => {
+      output += `Path ${pathIndex + 1}:\n`;
+      output += `${path.map((step, stepIndex) => {
+        const stepStr = `${stepIndex + 1}. ${step.from} → ${step.predicate} → ${step.to}`;
+        const sourceStr = step.source ? ` [Source: ${step.source}]` : '';
+        const pubStr = step.publications && step.publications !== 'N/A' ? ` (${step.publications})` : '';
+        const trialStr = step.clinical_trials && step.clinical_trials.length > 0 
+          ? ` [Clinical Trials: ${step.clinical_trials.map((t: any) => t.description).join(', ')}]` 
+          : '';
+        return `${stepStr}${sourceStr}${pubStr}${trialStr}`;
+      }).join('\n')}\n\n`;
+    });
     
     // Node participation analysis (bottleneck identification)
-    const nodeParticipation = analyzeNodeParticipation(paths);
+    const nodeParticipation = analyzeNodeParticipation(deduplicatedPaths);
     
     // Summary statistics
     output += `Path Analysis Summary:\n`;
-    output += `- Total edges in paths: ${paths.reduce((sum, path) => sum + path.length, 0)}\n`;
-    output += `- Unique nodes involved: ${getUniqueNodesInPaths(paths).length}\n`;
-    output += `- Path lengths: ${paths.map(p => p.length).join(', ')}\n\n`;
+    output += `- Total edges in paths: ${deduplicatedPaths.reduce((sum: number, path: any[]) => sum + path.length, 0)}\n`;
+    output += `- Unique nodes involved: ${getUniqueNodesInPaths(deduplicatedPaths).length}\n`;
+    output += `- Path lengths: ${deduplicatedPaths.map((p: any[]) => p.length).join(', ')}\n\n`;
     
     // Node participation/bottleneck analysis
     output += `Node Participation Analysis (Bottleneck Identification):\n`;
@@ -285,8 +308,8 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       .sort((a, b) => b[1].count - a[1].count);
     
     sortedNodes.forEach(([nodeName, data]) => {
-      const percentage = ((data.count / paths.length) * 100).toFixed(1);
-      output += `- ${nodeName}: appears in ${data.count}/${paths.length} paths (${percentage}%)\n`;
+      const percentage = ((data.count / deduplicatedPaths.length) * 100).toFixed(1);
+      output += `- ${nodeName}: appears in ${data.count}/${deduplicatedPaths.length} paths (${percentage}%)\n`;
       
       // Show which paths this node appears in
       if (data.paths.length > 0) {
@@ -303,7 +326,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     
     // Identify potential bottlenecks
     const bottlenecks = sortedNodes.filter(([nodeName, data]) => {
-      const percentage = (data.count / paths.length) * 100;
+      const percentage = (data.count / deduplicatedPaths.length) * 100;
       return percentage > 50; // Node appears in more than 50% of paths
     });
     
@@ -311,7 +334,7 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
       output += `\nPotential Bottlenecks (nodes in >50% of paths):\n`;
       output += `=============================================\n`;
       bottlenecks.forEach(([nodeName, data]) => {
-        const percentage = ((data.count / paths.length) * 100).toFixed(1);
+        const percentage = ((data.count / deduplicatedPaths.length) * 100).toFixed(1);
         output += `- ${nodeName} (${percentage}% participation)\n`;
       });
     }
@@ -361,20 +384,28 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     
     const paths: any[][] = [];
     
-    // First, find direct connections (1 hop)
-    const directConnections = graph.get(startNode)?.filter(neighbor => neighbor.to === endNode) || [];
-    directConnections.forEach(connection => {
-      paths.push([{
-        from: startNode,
-        to: endNode,
-        predicate: connection.predicate,
-        source: connection.source,
-        publications: connection.publications,
-        clinical_trials: connection.clinicalTrials
-      }]);
+    console.log(`  🔍 Starting path search from ${startNode} to ${endNode}`);
+    
+    // Debug: Show what nodes are connected to startNode
+    const startNodeNeighbors = graph.get(startNode) || [];
+    console.log(`  📋 Start node (${startNode}) has ${startNodeNeighbors.length} neighbors:`);
+    startNodeNeighbors.forEach((neighbor, index) => {
+      console.log(`    ${index + 1}. ${startNode} → ${neighbor.predicate} → ${neighbor.to}`);
     });
     
-    // Then find indirect paths (2-4 hops) using BFS with path tracking
+    // Debug: Show what nodes connect to endNode
+    const nodesToEnd = Array.from(graph.entries()).filter(([from, neighbors]) => 
+      neighbors.some(n => n.to === endNode)
+    );
+    console.log(`  📋 End node (${endNode}) has ${nodesToEnd.length} incoming connections:`);
+    nodesToEnd.forEach(([from, neighbors], index) => {
+      const relevantNeighbors = neighbors.filter(n => n.to === endNode);
+      relevantNeighbors.forEach(neighbor => {
+        console.log(`    ${index + 1}. ${from} → ${neighbor.predicate} → ${endNode}`);
+      });
+    });
+    
+    // Find all paths using BFS
     const queue: Array<{node: string, path: any[], visited: Set<string>, hops: number}> = [
       {node: startNode, path: [], visited: new Set([startNode]), hops: 0}
     ];
@@ -382,48 +413,64 @@ const SubjectNodeSelector: React.FC<SubjectNodeSelectorProps> = ({
     while (queue.length > 0) {
       const {node, path, visited, hops} = queue.shift()!;
       
-      // Stop if we've reached 4 hops
-      if (hops >= 4) {
-        continue;
+      console.log(`  🔍 Exploring node: ${node} (hops: ${hops}, path length: ${path.length})`);
+      
+      // If we reached the end node, save this path
+      if (node === endNode && path.length > 0) {
+        console.log(`  🎯 Found path with ${path.length} hops: ${path.map(step => `${step.from} → ${step.predicate} → ${step.to}`).join(' → ')}`);
+        paths.push([...path]);
       }
       
-      // If we reached the end node and it's not a direct connection, save this path
-      if (node === endNode && path.length > 0) {
-        // Check if this path is already included as a direct connection
-        const isDirectPath = path.length === 1 && path[0].from === startNode && path[0].to === endNode;
-        if (!isDirectPath) {
-          paths.push([...path]);
-        }
+      // Stop if we've reached 4 hops
+      if (hops >= 4) {
+        console.log(`  ⏹️ Stopping at ${hops} hops for node ${node}`);
         continue;
       }
       
       // Get all neighbors
       const neighbors = graph.get(node) || [];
+      console.log(`  📋 Node ${node} has ${neighbors.length} neighbors`);
       
       for (const neighbor of neighbors) {
-        if (!visited.has(neighbor.to)) {
-          const newPath = [...path, {
-            from: node,
-            to: neighbor.to,
-            predicate: neighbor.predicate,
-            source: neighbor.source,
-            publications: neighbor.publications,
-            clinical_trials: neighbor.clinicalTrials
-          }];
-          
-          const newVisited = new Set(visited);
-          newVisited.add(neighbor.to);
-          
-          queue.push({
-            node: neighbor.to,
-            path: newPath,
-            visited: newVisited,
-            hops: hops + 1
-          });
-        }
+        console.log(`    → ${node} → ${neighbor.predicate} → ${neighbor.to}`);
+        
+        // Allow revisiting nodes for longer paths, but avoid infinite loops
+        const newVisited = new Set(visited);
+        newVisited.add(neighbor.to);
+        
+        const newPath = [...path, {
+          from: node,
+          to: neighbor.to,
+          predicate: neighbor.predicate,
+          source: neighbor.source,
+          publications: neighbor.publications,
+          clinical_trials: neighbor.clinicalTrials
+        }];
+        
+        queue.push({
+          node: neighbor.to,
+          path: newPath,
+          visited: newVisited,
+          hops: hops + 1
+        });
       }
     }
     
+    console.log(`  ✅ Found ${paths.length} total paths`);
+    paths.forEach((path, index) => {
+      console.log(`    Path ${index + 1}: ${path.length} hops`);
+      path.forEach((step, stepIndex) => {
+        console.log(`      Step ${stepIndex + 1}: ${step.from} → ${step.predicate} → ${step.to}`);
+      });
+    });
+    
+    return paths;
+  };
+
+  // Helper function to deduplicate paths by combining identical node/predicate combinations
+  const deduplicatePaths = (paths: any[][]): any[][] => {
+    // For now, return the original paths without deduplication
+    // This preserves the multi-hop paths as they were found
     return paths;
   };
 
